@@ -1,27 +1,20 @@
 package main
 
 import (
-	httptransport "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/pursesManager/service"
-	"github.com/voltento/pursesManager/transport"
+	"github.com/gorilla/mux"
+	"github.com/voltento/pursesManager/account_managing"
 	"log"
 	"net/http"
 )
 
 // Transports expose the service to the network. In this first example we utilize JSON over HTTP.
 func main() {
-	svc := service.CreateService()
+	r := mux.NewRouter()
+	s := account_managing.CreateService()
+	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("POST")
 
-	uppercaseHandler := httptransport.NewServer(
-		transport.MakeUppercaseEndpoint(svc),
-		transport.DecodeUppercaseRequest,
-		transport.EncodeResponse,
-	)
-
-	http.Handle("/uppercase", uppercaseHandler)
-
+	http.Handle("/", r)
 	address := ":8080"
 	log.Printf("Start listen: %v", address)
 	log.Fatal(http.ListenAndServe(address, nil))
-
 }
