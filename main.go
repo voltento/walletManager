@@ -18,14 +18,7 @@ func main() {
 		transport.EncodeResponse,
 	)
 
-	countHandler := httptransport.NewServer(
-		transport.MakeCountEndpoint(svc),
-		transport.DecodeCountRequest,
-		transport.EncodeResponse,
-	)
-
 	http.Handle("/uppercase", uppercaseHandler)
-	http.Handle("/count", countHandler)
 
 	address := ":8080"
 	log.Printf("Start listen: %v", address)

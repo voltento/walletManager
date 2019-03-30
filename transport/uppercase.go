@@ -18,14 +18,6 @@ type uppercaseResponse struct {
 	Err string `json:"err,omitempty"` // errors don't define JSON marshaling
 }
 
-type countRequest struct {
-	S string `json:"s"`
-}
-
-type countResponse struct {
-	V int `json:"v"`
-}
-
 // Endpoints are a primary abstraction in go-kit. An endpoint represents a single RPC (method in our service interface)
 func MakeUppercaseEndpoint(svc service.Service) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
@@ -38,24 +30,8 @@ func MakeUppercaseEndpoint(svc service.Service) endpoint.Endpoint {
 	}
 }
 
-func MakeCountEndpoint(svc service.Service) endpoint.Endpoint {
-	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(countRequest)
-		v := svc.Count(req.S)
-		return countResponse{v}, nil
-	}
-}
-
 func DecodeUppercaseRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request uppercaseRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
-	}
-	return request, nil
-}
-
-func DecodeCountRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request countRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
