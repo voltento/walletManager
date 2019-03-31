@@ -27,8 +27,8 @@ type changeBalance struct {
 	Amount float64 `json:"change_amount"`
 }
 
-type response struct {
-	Response string   `json:"response"`
+type changeBalanceResponse struct {
+	Response string   `json:"changeBalanceResponse"`
 	Acc      *Account `json:"account,omitempty"`
 	Err      string   `json:"err,omitempty"`
 }
