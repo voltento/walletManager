@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/voltento/pursesManager/account_managing"
+	"github.com/voltento/pursesManager/brawsing"
 	"github.com/voltento/pursesManager/database"
 	"log"
 	"net/http"
@@ -19,6 +20,9 @@ func main() {
 
 	s := account_managing.CreateService(dbCtrl)
 	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("PUT")
+
+	b := brawsing.CreateService(dbCtrl)
+	r.Handle("/brawsing/get_accounts", brawsing.MakeHandler(b)).Methods("GET")
 
 	http.Handle("/", r)
 	address := ":8080"

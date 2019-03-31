@@ -17,8 +17,10 @@ type WalletManager interface {
 }
 
 type psqlManager struct {
-	db         *pg.DB
-	insertStmt *pg.Stmt
+	db *pg.DB
+
+	insertStmt      *pg.Stmt
+	getAccountsStmt *pg.Stmt
 }
 
 func (m psqlManager) Close() error {
@@ -32,12 +34,22 @@ func CreatePsqlWalletMgr() (WalletManager, error) {
 		Password: "123",
 	})
 
-	stm, err := db.Prepare("insert into account (id, currency, amount) values ($1, $2, $3);")
+	var err error
+
+	var insertStmt *pg.Stmt
+	insertStmt, err = db.Prepare("insert into account (id, currency, amount) values ($1, $2, $3);")
 	if err != nil {
 		return nil, err
 	}
 
-	return psqlManager{db, stm}, nil
+	var getAccountsStmt *pg.Stmt
+	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
+
+	mgr := psqlManager{
+		db:              db,
+		insertStmt:      insertStmt,
+		getAccountsStmt: getAccountsStmt}
+	return mgr, nil
 }
 
 func (m psqlManager) StartTransaction() (Transaction, error) {
@@ -45,11 +57,16 @@ func (m psqlManager) StartTransaction() (Transaction, error) {
 }
 
 func (m psqlManager) CreateAccount(ac *Account) error {
-	_, err := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Balance)
+	_, err := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
 	return err
 }
 
 func (m psqlManager) GetAllAccounts() ([]*Account, error) {
-	_, err := m.db.Exec("select id, currency, amount from account;")
-	return nil, err
+	var acc []*Account
+	_, err := m.getAccountsStmt.Query(&acc)
+	if err != nil {
+		return nil, err
+	}
+
+	return acc, nil
 }

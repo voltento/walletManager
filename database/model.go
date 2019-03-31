@@ -1,9 +1,9 @@
 package database
 
 type Account struct {
-	Id       string
-	Currency string
-	Balance  float64
+	Id       string  `json:"id"`
+	Currency string  `json:"currency"`
+	Amount   float64 `json:"amount"`
 }
 
 type PaymentDirection int
@@ -14,8 +14,8 @@ const (
 )
 
 type Payment struct {
-	AccountId string
-	Amount    float64
-	ToAccount string
-	Direction PaymentDirection
+	AccountId string           `json:"id"`
+	Amount    float64          `json:"amount"`
+	ToAccount string           `json:"id"`
+	Direction PaymentDirection `json:"direction"`
 }

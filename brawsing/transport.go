@@ -1,4 +1,4 @@
-package account_managing
+package brawsing
 
 import (
 	"context"
@@ -8,28 +8,19 @@ import (
 	"net/http"
 )
 
-func DecodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request request
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
-	}
-	return request, nil
+func DecodeRequest(_ context.Context, _ *http.Request) (interface{}, error) {
+	return nil, nil
 }
 
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
 }
 
-type request = database.Account
-
-type response struct {
-	Response string `json:"Response"`
-	Err      string `json:"err,omitempty"`
-}
+type response = database.Account
 
 func MakeHandler(bs Service) http.Handler {
 	return kithttp.NewServer(
-		MakeAddEndpoint(bs),
+		MakeEndpoint(bs),
 		DecodeRequest,
 		EncodeResponse,
 	)
