@@ -23,7 +23,7 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 type request = database.Account
 
 type response struct {
-	Response string `json:"Response"`
+	Response string `json:"response"`
 	Err      string `json:"err,omitempty"`
 }
 

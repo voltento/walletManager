@@ -18,9 +18,9 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 
 type response = database.Account
 
-func MakeHandler(bs Service) http.Handler {
+func MakeGetAccountsHandler(s Service) http.Handler {
 	return kithttp.NewServer(
-		MakeEndpoint(bs),
+		MakeGetAccountsEndpoint(s),
 		DecodeRequest,
 		EncodeResponse,
 	)

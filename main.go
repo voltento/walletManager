@@ -22,7 +22,7 @@ func main() {
 	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("PUT")
 
 	b := brawsing.CreateService(dbCtrl)
-	r.Handle("/brawsing/get_accounts", brawsing.MakeHandler(b)).Methods("GET")
+	r.Handle("/brawsing/get_accounts", brawsing.MakeGetAccountsHandler(b)).Methods("GET")
 
 	http.Handle("/", r)
 	address := ":8080"
