@@ -3,17 +3,20 @@ package account_managing
 import (
 	"errors"
 	"fmt"
+	"github.com/voltento/pursesManager/database"
 )
 
 type Service interface {
 	createUser(id string, currency string, balance float64) (string, error)
 }
 
-func CreateService() Service {
-	return serviceImplementation{}
+func CreateService(m database.WalletManager) Service {
+	return serviceImplementation{m}
 }
 
-type serviceImplementation struct{}
+type serviceImplementation struct {
+	m database.WalletManager
+}
 
 func (s serviceImplementation) createUser(id string, currency string, balance float64) (string, error) {
 	if id == "" {
@@ -28,7 +31,11 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 		return "", errors.New(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
 	}
 
-	// add logic here
+	er := s.m.CreateAccount(&database.Account{Id: id, Currency: currency, Balance: balance})
+	if er != nil {
+		return "", er
+	}
+
 	return "Success", nil
 }
 
