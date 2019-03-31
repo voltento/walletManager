@@ -6,6 +6,7 @@ import (
 	"github.com/voltento/pursesManager/account_managing"
 	"github.com/voltento/pursesManager/brawsing"
 	"github.com/voltento/pursesManager/database"
+	"github.com/voltento/pursesManager/payment"
 	"log"
 	"net/http"
 )
@@ -23,6 +24,9 @@ func main() {
 
 	b := brawsing.CreateService(dbCtrl)
 	r.Handle("/brawsing/get_accounts", brawsing.MakeGetAccountsHandler(b)).Methods("GET")
+
+	p := payment.CreateService(dbCtrl)
+	r.Handle("/payment/change_balance", payment.MakeChangeBalanceHandler(p)).Methods("PUT")
 
 	http.Handle("/", r)
 	address := ":8080"
