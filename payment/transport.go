@@ -11,7 +11,7 @@ import (
 type Account = database.Account
 
 func DecodeChangeBalanceRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request changeBalance
+	var request changeBalanceRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	return json.NewEncoder(w).Encode(response)
 }
 
-type changeBalance struct {
+type changeBalanceRequest struct {
 	Id     string  `json:"id"`
 	Amount float64 `json:"change_amount"`
 }
@@ -37,6 +37,33 @@ func MakeChangeBalanceHandler(s Service) http.Handler {
 	return kithttp.NewServer(
 		MakeGetAccountsEndpoint(s),
 		DecodeChangeBalanceRequest,
+		EncodeResponse,
+	)
+}
+
+func DecodeSendMoneyRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var request sendMoneyRequest
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		return nil, err
+	}
+	return request, nil
+}
+
+type sendMoneyRequest struct {
+	FromAccId string  `json:"from_account"`
+	ToAccId   string  `json:"to_account"`
+	Amount    float64 `json:"change_amount"`
+}
+
+type sendMoneyResponse struct {
+	Response string `json:"changeBalanceResponse"`
+	Err      string `json:"err,omitempty"`
+}
+
+func MakeSendMoneyHandler(s Service) http.Handler {
+	return kithttp.NewServer(
+		MakeSendMoneyEndpoint(s),
+		DecodeSendMoneyRequest,
 		EncodeResponse,
 	)
 }

@@ -27,6 +27,7 @@ func main() {
 
 	p := payment.CreateService(dbCtrl)
 	r.Handle("/payment/change_balance", payment.MakeChangeBalanceHandler(p)).Methods("PUT")
+	r.Handle("/payment/send_money", payment.MakeSendMoneyHandler(p)).Methods("PUT")
 
 	http.Handle("/", r)
 	address := ":8080"

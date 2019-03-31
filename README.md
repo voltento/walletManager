@@ -25,3 +25,6 @@ Change account balance
 
 `curl -XPUT -d'{"id":"James", "change_amount": 90}' localhost:8080/payment/change_balance`
 
+Transfer money
+
+`curl -XPUT -d'{"from_account":"James", "to_account": "foo", "change_amount": 90}' localhost:8080/payment/send_money`
