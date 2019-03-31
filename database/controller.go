@@ -110,8 +110,6 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 		return nil, buildCantFindRecordError(id)
 	}
 
-	print(result)
-
 	return acc, nil
 }
 

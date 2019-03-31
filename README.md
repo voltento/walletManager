@@ -10,8 +10,18 @@ CREATE TABLE account (
  amount int  not null
 );
 
-curl -XPUT -d'{"id":"hello, world", "currency": "USD"}' localhost:8080/account_managing/add/
 
-curl -XPUT -d'{"id":"James", "change_amount": 90}' localhost:8080/payment/change_balance
+**API**
 
-curl -XPUT -d'{"id":"jemy", "amount": 10}' localhost:8080/payment/change_balance
+Add new account 
+
+`curl -XPUT -d'{"id":"hello, world", "currency": "USD"}' localhost:8080/account_managing/add/`
+
+Get accounts
+
+`curl localhost:8080/brawsing/get_accounts`
+
+Change account balance
+
+`curl -XPUT -d'{"id":"James", "change_amount": 90}' localhost:8080/payment/change_balance`
+
