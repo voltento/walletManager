@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/voltento/pursesManager/database"
+	"github.com/voltento/pursesManager/httpErrors"
 	"net/http"
 )
 
@@ -13,7 +14,11 @@ func DecodeRequest(_ context.Context, _ *http.Request) (interface{}, error) {
 }
 
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
-	return json.NewEncoder(w).Encode(response)
+	er := json.NewEncoder(w).Encode(response)
+	if er != nil {
+		er = httpErrors.BuildProcessingError(er.Error())
+	}
+	return er
 }
 
 type accResponse = database.Account

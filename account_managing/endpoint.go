@@ -2,7 +2,7 @@ package account_managing
 
 import (
 	"github.com/go-kit/kit/endpoint"
-	"github.com/voltento/pursesManager/database"
+	"github.com/voltento/pursesManager/httpErrors"
 )
 import "context"
 
@@ -11,7 +11,7 @@ func makeAddEndpoint(svc Service) endpoint.Endpoint {
 		req := r.(request)
 		v, er := svc.createUser(req.Id, req.Currency, req.Amount)
 		if er != nil {
-			return database.Error{Msg: "Field", Error: er.Error()}, er
+			return nil, httpErrors.BuildDecodeError(er.Error())
 		}
 		return response{Response: v}, nil
 	}
