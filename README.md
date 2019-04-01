@@ -1,14 +1,22 @@
-docker run --rm   --name pg-docker -e POSTGRES_PASSWORD=123 -d -p 5432:5432 postgres
+    docker run --rm   --name pg-docker -e POSTGRES_PASSWORD=123 -d -p 5432:5432 postgres
+    
+    psql -u postgres
+    
+    create database wallets;
 
-psql -u postgres
+    CREATE TABLE account (
+     id text PRIMARY KEY,
+     currency text not null,
+     amount int  not null
+    );
 
-create database wallets;
 
-CREATE TABLE account (
- id text PRIMARY KEY,
- currency text not null,
- amount int  not null
-);
+    CREATE TABLE transfer (
+     id serial PRIMARY KEY,
+     from_account text not null REFERENCES account(id),
+     to_account text not null REFERENCES account(id),
+     amount int  not null
+    );
 
 
 **API**
