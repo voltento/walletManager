@@ -23,7 +23,8 @@ func main() {
 	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("PUT")
 
 	b := brawsing.CreateService(dbCtrl)
-	r.Handle("/brawsing/get_accounts", brawsing.MakeGetAccountsHandler(b)).Methods("GET")
+	r.Handle("/brawsing/accounts", brawsing.MakeGetAccountsHandler(b)).Methods("GET")
+	r.Handle("/brawsing/payments", brawsing.MakeGetPaymentsHandler(b)).Methods("GET")
 
 	p := payment.CreateService(dbCtrl)
 	r.Handle("/payment/change_balance", payment.MakeChangeBalanceHandler(p)).Methods("PUT")

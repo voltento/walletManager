@@ -15,6 +15,7 @@ type WalletManager interface {
 	StartTransaction() (Transaction, error)
 	AddAccount(ac *Account) error
 	GetAllAccounts() ([]*Account, error)
+	GetPayments() ([]*Payment, error)
 	Close() error
 	GetAccount(id string) (*Account, error)
 	UpdateAccount(id string, acc *Account) error
@@ -29,6 +30,7 @@ type psqlManager struct {
 	getAccountStmt    *pg.Stmt
 	updateAccountStmt *pg.Stmt
 	addPaymentStmt    *pg.Stmt
+	getPaymentsStmt   *pg.Stmt
 }
 
 func (m psqlManager) Close() error {
@@ -50,8 +52,8 @@ func CreatePsqlWalletMgr() (WalletManager, error) {
 		return nil, err
 	}
 
-	var getAccountsStmt *pg.Stmt
-	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
+	var getPaymentsStmt *pg.Stmt
+	getPaymentsStmt, err = db.Prepare("select id, currency, amount from account;")
 	if err != nil {
 		return nil, err
 	}
@@ -68,6 +70,12 @@ func CreatePsqlWalletMgr() (WalletManager, error) {
 		return nil, err
 	}
 
+	var getAccountsStmt *pg.Stmt
+	getAccountsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
+	if err != nil {
+		return nil, err
+	}
+
 	var addPaymentStmt *pg.Stmt
 	addPaymentStmt, err = db.Prepare("insert into payment (from_account, to_account, amount) values ($1, $2, $3);")
 	if err != nil {
@@ -80,7 +88,8 @@ func CreatePsqlWalletMgr() (WalletManager, error) {
 		getAccountsStmt:   getAccountsStmt,
 		getAccountStmt:    getAccountStmt,
 		updateAccountStmt: updateAccountStmt,
-		addPaymentStmt:    addPaymentStmt}
+		addPaymentStmt:    addPaymentStmt,
+		getPaymentsStmt:   getPaymentsStmt}
 	return mgr, nil
 }
 
@@ -101,6 +110,16 @@ func (m psqlManager) GetAllAccounts() ([]*Account, error) {
 	}
 
 	return acc, nil
+}
+
+func (m psqlManager) GetPayments() ([]*Payment, error) {
+	var ps []*Payment
+	_, err := m.getAccountsStmt.Query(&ps)
+	if err != nil {
+		return nil, err
+	}
+
+	return ps, nil
 }
 
 func (m psqlManager) UpdateAccount(id string, acc *Account) error {
@@ -132,7 +151,7 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 }
 
 func (m psqlManager) AddPayment(p *Payment) error {
-	_, er := m.addPaymentStmt.Exec(p.FromAccId, p.ToAccId, p.Amount)
+	_, er := m.addPaymentStmt.Exec(p.From_account, p.To_account, p.Amount)
 	return er
 }
 

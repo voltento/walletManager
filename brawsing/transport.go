@@ -16,11 +16,20 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	return json.NewEncoder(w).Encode(response)
 }
 
-type response = database.Account
+type accResponse = database.Account
+type paymentResponse = database.Payment
 
 func MakeGetAccountsHandler(s Service) http.Handler {
 	return kithttp.NewServer(
 		MakeGetAccountsEndpoint(s),
+		DecodeRequest,
+		EncodeResponse,
+	)
+}
+
+func MakeGetPaymentsHandler(s Service) http.Handler {
+	return kithttp.NewServer(
+		MakeGetPaymentsEndpoint(s),
 		DecodeRequest,
 		EncodeResponse,
 	)

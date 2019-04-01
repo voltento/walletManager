@@ -27,7 +27,7 @@ Add new account
 
 Get accounts
 
-`curl localhost:8080/brawsing/get_accounts`
+`curl localhost:8080/brawsing/accounts`
 
 Change account balance
 

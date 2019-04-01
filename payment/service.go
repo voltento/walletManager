@@ -106,7 +106,7 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
-	er = s.m.AddPayment(&database.Payment{FromAccId: r.FromAccId, ToAccId: r.ToAccId, Amount: r.Amount})
+	er = s.m.AddPayment(&database.Payment{From_account: r.FromAccId, To_account: r.ToAccId, Amount: r.Amount})
 	if er != nil {
 		tr.Rollback()
 		return &sendMoneyResponse{Err: er.Error()}, er

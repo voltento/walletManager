@@ -7,10 +7,10 @@ type Account struct {
 }
 
 type Payment struct {
-	Id        int
-	FromAccId string  `json:"from_account_id"`
-	Amount    float64 `json:"amount"`
-	ToAccId   string  `json:"to_account_id"`
+	Id           int
+	From_account string  `json:"from_account_id"`
+	Amount       float64 `json:"amount"`
+	To_account   string  `json:"to_account_id"`
 }
 
 type Error struct {

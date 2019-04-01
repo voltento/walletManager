@@ -5,7 +5,8 @@ import (
 )
 
 type Service interface {
-	getUsers() ([]*response, error)
+	getUsers() ([]*accResponse, error)
+	getPayments() ([]*paymentResponse, error)
 }
 
 func CreateService(m database.WalletManager) Service {
@@ -16,6 +17,10 @@ type serviceImplementation struct {
 	m database.WalletManager
 }
 
-func (s serviceImplementation) getUsers() ([]*response, error) {
+func (s serviceImplementation) getUsers() ([]*accResponse, error) {
 	return s.m.GetAllAccounts()
+}
+
+func (s serviceImplementation) getPayments() ([]*paymentResponse, error) {
+	return s.m.GetPayments()
 }
