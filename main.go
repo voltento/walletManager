@@ -14,9 +14,9 @@ import (
 // Transports expose the service to the network. In this first example we utilize JSON over HTTP.
 func main() {
 	r := mux.NewRouter()
-	dbCtrl, err := database.CreateWalletMgrCluster(10)
-	if err != nil {
-		log.Fatal(fmt.Sprintf("Error: %v", err.Error()))
+	dbCtrl, er := database.CreateWalletMgrCluster(10)
+	if er != nil {
+		log.Fatal(fmt.Sprintf("Error: %v", er.Error()))
 	}
 
 	s := account_managing.CreateService(dbCtrl)

@@ -144,15 +144,15 @@ func (m psqlManager) StartTransaction() (Transaction, error) {
 }
 
 func (m psqlManager) AddAccount(ac *Account) error {
-	_, err := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
-	return err
+	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
+	return er
 }
 
 func (m psqlManager) GetAllAccounts() ([]Account, error) {
 	var acc []Account
-	_, err := m.getAccountsStmt.Query(&acc)
-	if err != nil {
-		return nil, err
+	_, er := m.getAccountsStmt.Query(&acc)
+	if er != nil {
+		return nil, er
 	}
 
 	return acc, nil
@@ -160,18 +160,18 @@ func (m psqlManager) GetAllAccounts() ([]Account, error) {
 
 func (m psqlManager) GetPayments() ([]Payment, error) {
 	var ps []Payment
-	_, err := m.getAccountsStmt.Query(&ps)
-	if err != nil {
-		return nil, err
+	_, er := m.getAccountsStmt.Query(&ps)
+	if er != nil {
+		return nil, er
 	}
 
 	return ps, nil
 }
 
 func (m psqlManager) UpdateAccount(id string, acc *Account) error {
-	r, err := m.updateAccountStmt.Exec(acc.Id, acc.Currency, acc.Amount, id)
-	if err != nil {
-		return err
+	r, er := m.updateAccountStmt.Exec(acc.Id, acc.Currency, acc.Amount, id)
+	if er != nil {
+		return er
 	}
 
 	if r.RowsAffected() == 0 {
@@ -183,10 +183,10 @@ func (m psqlManager) UpdateAccount(id string, acc *Account) error {
 
 func (m psqlManager) GetAccount(id string) (*Account, error) {
 	acc := new(Account)
-	result, err := m.getAccountStmt.Query(acc, id)
+	result, er := m.getAccountStmt.Query(acc, id)
 
-	if err != nil {
-		return nil, err
+	if er != nil {
+		return nil, er
 	}
 
 	if result.RowsReturned() == 0 {

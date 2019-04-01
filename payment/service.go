@@ -23,9 +23,9 @@ func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBal
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 
-	tr, err := m.StartTransaction()
-	if err != nil {
-		return nil, err
+	tr, er := m.StartTransaction()
+	if er != nil {
+		return nil, er
 	}
 
 	acc, er := m.GetAccount(r.Id)
@@ -54,18 +54,18 @@ func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBal
 
 func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error) {
 	if r.FromAccId == "" {
-		err := errors.New(fmt.Sprintf("From account param isn't provided"))
-		return &sendMoneyResponse{Err: err.Error()}, err
+		er := errors.New(fmt.Sprintf("From account param isn't provided"))
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	if r.ToAccId == "" {
-		err := errors.New(fmt.Sprintf("To account param isn't provided"))
-		return &sendMoneyResponse{Err: err.Error()}, err
+		er := errors.New(fmt.Sprintf("To account param isn't provided"))
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	if r.FromAccId == r.ToAccId {
-		err := errors.New(fmt.Sprintf("Can't transfer from the same account"))
-		return &sendMoneyResponse{Err: err.Error()}, err
+		er := errors.New(fmt.Sprintf("Can't transfer from the same account"))
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	m, closer := s.c.GetWalletMgr()

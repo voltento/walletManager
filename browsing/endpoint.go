@@ -8,9 +8,9 @@ import "context"
 
 func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
-		v, err := svc.getUsers()
-		if err != nil {
-			return nil, err
+		v, er := svc.getUsers()
+		if er != nil {
+			return nil, er
 		}
 		return v, nil
 	}
@@ -18,9 +18,9 @@ func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 
 func makeGetPaymentsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
-		v, err := svc.getPayments()
-		if err != nil {
-			return database.Error{Msg: "Field", Error: err.Error()}, nil
+		v, er := svc.getPayments()
+		if er != nil {
+			return database.Error{Msg: "Field", Error: er.Error()}, er
 		}
 		return v, nil
 	}

@@ -10,8 +10,8 @@ import (
 
 func DecodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request request
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
+	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
+		return nil, er
 	}
 	return request, nil
 }

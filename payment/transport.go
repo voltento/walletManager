@@ -12,8 +12,8 @@ type Account = database.Account
 
 func DecodeChangeBalanceRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request changeBalanceRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
+	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
+		return nil, er
 	}
 	return request, nil
 }
@@ -43,8 +43,8 @@ func MakeChangeBalanceHandler(s Service) http.Handler {
 
 func DecodeSendMoneyRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var request sendMoneyRequest
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		return nil, err
+	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
+		return nil, er
 	}
 	return request, nil
 }
