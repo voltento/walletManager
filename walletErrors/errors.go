@@ -1,4 +1,4 @@
-package httpErrors
+package walletErrors
 
 import (
 	"fmt"
@@ -40,4 +40,20 @@ func (e decodeError) StatusCode() int {
 
 func (e decodeError) Error() string {
 	return fmt.Sprintf("The error occured during decode the query. Error: `%v`", e.p)
+}
+
+func BuildFindAccountError(acId string) HttpError {
+	return findAccountError{p: acId}
+}
+
+type findAccountError struct {
+	p string
+}
+
+func (e findAccountError) StatusCode() int {
+	return 400
+}
+
+func (e findAccountError) Error() string {
+	return fmt.Sprintf("Can't find record an account with id `%v`", e.p)
 }

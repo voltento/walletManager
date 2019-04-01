@@ -1,9 +1,8 @@
 package database
 
 import (
-	"errors"
-	"fmt"
 	"github.com/go-pg/pg"
+	"github.com/voltento/pursesManager/walletErrors"
 )
 
 type Transaction interface {
@@ -176,7 +175,7 @@ func (m psqlManager) UpdateAccount(id string, acc *Account) error {
 	}
 
 	if r.RowsAffected() == 0 {
-		return buildCantFindRecordError(id)
+		return walletErrors.BuildFindAccountError(id)
 	}
 
 	return nil
@@ -191,7 +190,7 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 	}
 
 	if result.RowsReturned() == 0 {
-		return nil, buildCantFindRecordError(id)
+		return nil, walletErrors.BuildFindAccountError(id)
 	}
 
 	return acc, nil
@@ -200,8 +199,4 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 func (m psqlManager) AddPayment(p *Payment) error {
 	_, er := m.addPaymentStmt.Exec(p.From_account, p.To_account, p.Amount)
 	return er
-}
-
-func buildCantFindRecordError(id string) error {
-	return errors.New(fmt.Sprintf("Can't find the record for id '%v'", id))
 }
