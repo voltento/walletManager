@@ -1,0 +1,10 @@
+{
+  "address": ":8080",
+  "db": {
+    "name": "db",
+    "address": "db:5432",
+    "user": "user",
+    "password": "pass",
+    "pool_size": 10
+  }
+}
