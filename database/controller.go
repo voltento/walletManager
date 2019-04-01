@@ -22,6 +22,52 @@ type WalletManager interface {
 	AddPayment(p *Payment) error
 }
 
+type Closer func()
+
+type WalletMgrCluster interface {
+	GetWalletMgr() (WalletManager, Closer)
+	Close() error
+}
+
+type walletMgrCluster struct {
+	mgrPool    chan WalletManager
+	mgrStorage []WalletManager
+}
+
+func (c walletMgrCluster) Close() error {
+	var er error
+	for _, v := range c.mgrStorage {
+		newEr := v.Close()
+		if er == nil && newEr != nil {
+			er = newEr
+		}
+	}
+
+	return er
+}
+
+func (c walletMgrCluster) GetWalletMgr() (WalletManager, Closer) {
+	mgr := <-c.mgrPool
+
+	return mgr, func() { c.mgrPool <- mgr }
+}
+
+func CreateWalletMgrCluster(sz int) (WalletMgrCluster, error) {
+	cluster := walletMgrCluster{mgrPool: make(chan WalletManager, sz), mgrStorage: make([]WalletManager, sz)}
+	var er error
+	var newMgr WalletManager
+	for i := 0; i < sz; i += 1 {
+		newMgr, er = createPsqlWalletMgr()
+		if er != nil {
+			return nil, er
+		}
+
+		cluster.mgrPool <- newMgr
+		cluster.mgrStorage[i] = newMgr
+	}
+	return cluster, nil
+}
+
 type psqlManager struct {
 	db *pg.DB
 
@@ -37,7 +83,7 @@ func (m psqlManager) Close() error {
 	return m.db.Close()
 }
 
-func CreatePsqlWalletMgr() (WalletManager, error) {
+func createPsqlWalletMgr() (WalletManager, error) {
 	db := pg.Connect(&pg.Options{
 		User:     "postgres",
 		Database: "wallets",

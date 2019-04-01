@@ -10,15 +10,17 @@ type Service interface {
 	createUser(id string, currency string, balance float64) (string, error)
 }
 
-func CreateService(m database.WalletManager) Service {
-	return serviceImplementation{m}
+func CreateService(c database.WalletMgrCluster) Service {
+	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	m database.WalletManager
+	c database.WalletMgrCluster
 }
 
 func (s serviceImplementation) createUser(id string, currency string, balance float64) (string, error) {
+	m, closer := s.c.GetWalletMgr()
+	defer closer()
 	if id == "" {
 		return "", buildEmptyFieldError("id")
 	}
@@ -31,7 +33,7 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 		return "", errors.New(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
 	}
 
-	er := s.m.AddAccount(&database.Account{Id: id, Currency: currency, Amount: balance})
+	er := m.AddAccount(&database.Account{Id: id, Currency: currency, Amount: balance})
 	if er != nil {
 		return "", er
 	}

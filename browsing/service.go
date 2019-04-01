@@ -9,18 +9,24 @@ type Service interface {
 	getPayments() ([]*paymentResponse, error)
 }
 
-func CreateService(m database.WalletManager) Service {
-	return serviceImplementation{m}
+func CreateService(c database.WalletMgrCluster) Service {
+	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	m database.WalletManager
+	c database.WalletMgrCluster
 }
 
 func (s serviceImplementation) getUsers() ([]*accResponse, error) {
-	return s.m.GetAllAccounts()
+	m, closer := s.c.GetWalletMgr()
+	defer closer()
+
+	return m.GetAllAccounts()
 }
 
 func (s serviceImplementation) getPayments() ([]*paymentResponse, error) {
-	return s.m.GetPayments()
+	m, closer := s.c.GetWalletMgr()
+	defer closer()
+
+	return m.GetPayments()
 }

@@ -11,21 +11,24 @@ type Service interface {
 	sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error)
 }
 
-func CreateService(m database.WalletManager) Service {
-	return serviceImplementation{m}
+func CreateService(c database.WalletMgrCluster) Service {
+	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	m database.WalletManager
+	c database.WalletMgrCluster
 }
 
 func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error) {
-	tr, err := s.m.StartTransaction()
+	m, closer := s.c.GetWalletMgr()
+	defer closer()
+
+	tr, err := m.StartTransaction()
 	if err != nil {
 		return nil, err
 	}
 
-	acc, er := s.m.GetAccount(r.Id)
+	acc, er := m.GetAccount(r.Id)
 
 	if er != nil {
 		return &changeBalanceResponse{Response: "Field", Err: er.Error()}, nil
@@ -36,7 +39,7 @@ func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBal
 		return &changeBalanceResponse{Response: "Not enough balance", Acc: acc}, nil
 	} else {
 		acc.Amount = newAmount
-		er = s.m.UpdateAccount(acc.Id, acc)
+		er = m.UpdateAccount(acc.Id, acc)
 		if er != nil {
 			return &changeBalanceResponse{Response: "Field", Err: er.Error()}, nil
 		}
@@ -65,13 +68,16 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 		return &sendMoneyResponse{Err: err.Error()}, err
 	}
 
-	tr, er := s.m.StartTransaction()
+	m, closer := s.c.GetWalletMgr()
+	defer closer()
+
+	tr, er := m.StartTransaction()
 	if er != nil {
 		return nil, er
 	}
 
 	var fromAcc *Account
-	fromAcc, er = s.m.GetAccount(r.FromAccId)
+	fromAcc, er = m.GetAccount(r.FromAccId)
 	if er != nil {
 		return &sendMoneyResponse{Err: er.Error()}, er
 	}
@@ -82,7 +88,7 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 	}
 
 	var toAcc *Account
-	toAcc, er = s.m.GetAccount(r.ToAccId)
+	toAcc, er = m.GetAccount(r.ToAccId)
 	if er != nil {
 		return nil, er
 	}
@@ -93,20 +99,20 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 	}
 
 	fromAcc.Amount -= r.Amount
-	er = s.m.UpdateAccount(fromAcc.Id, fromAcc)
+	er = m.UpdateAccount(fromAcc.Id, fromAcc)
 	if er != nil {
 		tr.Rollback()
 		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	toAcc.Amount += r.Amount
-	er = s.m.UpdateAccount(toAcc.Id, toAcc)
+	er = m.UpdateAccount(toAcc.Id, toAcc)
 	if er != nil {
 		tr.Rollback()
 		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
-	er = s.m.AddPayment(&database.Payment{From_account: r.FromAccId, To_account: r.ToAccId, Amount: r.Amount})
+	er = m.AddPayment(&database.Payment{From_account: r.FromAccId, To_account: r.ToAccId, Amount: r.Amount})
 	if er != nil {
 		tr.Rollback()
 		return &sendMoneyResponse{Err: er.Error()}, er
