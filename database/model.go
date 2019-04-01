@@ -6,16 +6,14 @@ type Account struct {
 	Amount   float64 `json:"amount"`
 }
 
-type PaymentDirection int
-
-const (
-	Incoming PaymentDirection = iota
-	Outgoing
-)
-
 type Payment struct {
-	AccountId string           `json:"id"`
-	Amount    float64          `json:"amount"`
-	ToAccount string           `json:"id"`
-	Direction PaymentDirection `json:"direction"`
+	Id        int
+	FromAccId string  `json:"from_account_id"`
+	Amount    float64 `json:"amount"`
+	ToAccId   string  `json:"to_account_id"`
+}
+
+type Error struct {
+	Msg   string `json:"msg"`
+	Error string `json:"error"`
 }

@@ -13,11 +13,12 @@ type Transaction interface {
 
 type WalletManager interface {
 	StartTransaction() (Transaction, error)
-	CreateAccount(ac *Account) error
+	AddAccount(ac *Account) error
 	GetAllAccounts() ([]*Account, error)
 	Close() error
 	GetAccount(id string) (*Account, error)
 	UpdateAccount(id string, acc *Account) error
+	AddPayment(p *Payment) error
 }
 
 type psqlManager struct {
@@ -27,6 +28,7 @@ type psqlManager struct {
 	getAccountsStmt   *pg.Stmt
 	getAccountStmt    *pg.Stmt
 	updateAccountStmt *pg.Stmt
+	addPaymentStmt    *pg.Stmt
 }
 
 func (m psqlManager) Close() error {
@@ -50,19 +52,35 @@ func CreatePsqlWalletMgr() (WalletManager, error) {
 
 	var getAccountsStmt *pg.Stmt
 	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
+	if err != nil {
+		return nil, err
+	}
 
 	var getAccountStmt *pg.Stmt
 	getAccountStmt, err = db.Prepare("select id, currency, amount from account where id=$1;")
+	if err != nil {
+		return nil, err
+	}
 
 	var updateAccountStmt *pg.Stmt
 	updateAccountStmt, err = db.Prepare("update account set id=$1, currency=$2, amount=$3  where id=$4;")
+	if err != nil {
+		return nil, err
+	}
+
+	var addPaymentStmt *pg.Stmt
+	addPaymentStmt, err = db.Prepare("insert into payment (from_account, to_account, amount) values ($1, $2, $3);")
+	if err != nil {
+		return nil, err
+	}
 
 	mgr := psqlManager{
 		db:                db,
 		insertStmt:        insertStmt,
 		getAccountsStmt:   getAccountsStmt,
 		getAccountStmt:    getAccountStmt,
-		updateAccountStmt: updateAccountStmt}
+		updateAccountStmt: updateAccountStmt,
+		addPaymentStmt:    addPaymentStmt}
 	return mgr, nil
 }
 
@@ -70,7 +88,7 @@ func (m psqlManager) StartTransaction() (Transaction, error) {
 	return m.db.Begin()
 }
 
-func (m psqlManager) CreateAccount(ac *Account) error {
+func (m psqlManager) AddAccount(ac *Account) error {
 	_, err := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
 	return err
 }
@@ -111,6 +129,11 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 	}
 
 	return acc, nil
+}
+
+func (m psqlManager) AddPayment(p *Payment) error {
+	_, er := m.addPaymentStmt.Exec(p.FromAccId, p.ToAccId, p.Amount)
+	return er
 }
 
 func buildCantFindRecordError(id string) error {

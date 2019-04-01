@@ -1,6 +1,9 @@
 package payment
 
-import "github.com/go-kit/kit/endpoint"
+import (
+	"github.com/go-kit/kit/endpoint"
+	"github.com/voltento/pursesManager/database"
+)
 import "context"
 
 func MakeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
@@ -19,7 +22,7 @@ func MakeSendMoneyEndpoint(svc Service) endpoint.Endpoint {
 		req := r.(sendMoneyRequest)
 		v, err := svc.sendMoney(req)
 		if err != nil {
-			return nil, err
+			return database.Error{Msg: "Error occured during exec SendMoney query", Error: err.Error()}, nil
 		}
 		return v, nil
 	}

@@ -7,15 +7,15 @@
     CREATE TABLE account (
      id text PRIMARY KEY,
      currency text not null,
-     amount int  not null
+     amount double precision not null
     );
 
 
-    CREATE TABLE transfer (
+    CREATE TABLE payment (
      id serial PRIMARY KEY,
      from_account text not null REFERENCES account(id),
      to_account text not null REFERENCES account(id),
-     amount int  not null
+     amount double precision not null
     );
 
 

@@ -65,48 +65,53 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 		return &sendMoneyResponse{Err: err.Error()}, err
 	}
 
-	tr, err := s.m.StartTransaction()
-	if err != nil {
-		return nil, err
+	tr, er := s.m.StartTransaction()
+	if er != nil {
+		return nil, er
 	}
 
 	var fromAcc *Account
-	fromAcc, err = s.m.GetAccount(r.FromAccId)
-	if err != nil {
-		return &sendMoneyResponse{Err: err.Error()}, err
+	fromAcc, er = s.m.GetAccount(r.FromAccId)
+	if er != nil {
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	if fromAcc.Amount < r.Amount {
-		err = errors.New(fmt.Sprintf("Not enough money for transfering"))
-		return &sendMoneyResponse{Err: err.Error()}, err
+		er = errors.New(fmt.Sprintf("Not enough money for transfering"))
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	var toAcc *Account
-	toAcc, err = s.m.GetAccount(r.ToAccId)
-	if err != nil {
-		return nil, err
+	toAcc, er = s.m.GetAccount(r.ToAccId)
+	if er != nil {
+		return nil, er
 	}
 
 	if fromAcc.Currency != toAcc.Currency {
-		err = errors.New(fmt.Sprintf("Can't transfer between account with different currency"))
-		return &sendMoneyResponse{Err: err.Error()}, err
+		er = errors.New(fmt.Sprintf("Can't transfer between account with different currency"))
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	fromAcc.Amount -= r.Amount
-	err = s.m.UpdateAccount(fromAcc.Id, fromAcc)
-	if err != nil {
+	er = s.m.UpdateAccount(fromAcc.Id, fromAcc)
+	if er != nil {
 		tr.Rollback()
-		return &sendMoneyResponse{Err: err.Error()}, err
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	toAcc.Amount += r.Amount
-	err = s.m.UpdateAccount(toAcc.Id, toAcc)
-	if err != nil {
+	er = s.m.UpdateAccount(toAcc.Id, toAcc)
+	if er != nil {
 		tr.Rollback()
-		return &sendMoneyResponse{Err: err.Error()}, err
+		return &sendMoneyResponse{Err: er.Error()}, er
+	}
+
+	er = s.m.AddPayment(&database.Payment{FromAccId: r.FromAccId, ToAccId: r.ToAccId, Amount: r.Amount})
+	if er != nil {
+		tr.Rollback()
+		return &sendMoneyResponse{Err: er.Error()}, er
 	}
 
 	tr.Commit()
-
 	return &sendMoneyResponse{Response: "Success"}, nil
 }

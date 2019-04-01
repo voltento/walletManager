@@ -31,7 +31,7 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 		return "", errors.New(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
 	}
 
-	er := s.m.CreateAccount(&database.Account{Id: id, Currency: currency, Amount: balance})
+	er := s.m.AddAccount(&database.Account{Id: id, Currency: currency, Amount: balance})
 	if er != nil {
 		return "", er
 	}
