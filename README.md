@@ -1,24 +1,6 @@
-    docker run --rm   --name pg-docker -e POSTGRES_PASSWORD=123 -d -p 5432:5432 postgres
-    
-    psql -u postgres
-    
-    create database wallets;
+**Start**
 
-    CREATE TABLE account (
-     id text PRIMARY KEY,
-     currency text not null,
-     amount double precision not null,
-     constraint account_nonnegative check (amount >= 0)
-    );
-
-
-    CREATE TABLE payment (
-     id serial PRIMARY KEY,
-     from_account text not null REFERENCES account(id),
-     to_account text not null REFERENCES account(id),
-     amount double precision not null
-    );
-
+`cd .deploy &&  docker-compose build && docker-compose up`
 
 **API**
 
