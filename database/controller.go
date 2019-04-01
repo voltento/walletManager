@@ -52,12 +52,12 @@ func (c walletMgrCluster) GetWalletMgr() (WalletManager, Closer) {
 	return mgr, func() { c.mgrPool <- mgr }
 }
 
-func CreateWalletMgrCluster(sz int) (WalletMgrCluster, error) {
+func CreateWalletMgrCluster(user string, pswrd string, dbName string, addr string, sz int) (WalletMgrCluster, error) {
 	cluster := walletMgrCluster{mgrPool: make(chan WalletManager, sz), mgrStorage: make([]WalletManager, sz)}
 	var er error
 	var newMgr WalletManager
 	for i := 0; i < sz; i += 1 {
-		newMgr, er = createPsqlWalletMgr()
+		newMgr, er = createPsqlWalletMgr(user, pswrd, dbName, addr)
 		if er != nil {
 			return nil, er
 		}
@@ -83,11 +83,12 @@ func (m psqlManager) Close() error {
 	return m.db.Close()
 }
 
-func createPsqlWalletMgr() (WalletManager, error) {
+func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) (WalletManager, error) {
 	db := pg.Connect(&pg.Options{
-		User:     "postgres",
-		Database: "wallets",
-		Password: "123",
+		User:     user,
+		Database: dbName,
+		Password: pswrd,
+		Addr:     addr,
 	})
 
 	var err error

@@ -1,0 +1,10 @@
+{
+  "address": ":8080",
+  "db": {
+    "name": "wallets",
+    "address": ":5432",
+    "user": "postgres",
+    "password": "123",
+    "pool_size": 10
+  }
+}
