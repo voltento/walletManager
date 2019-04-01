@@ -55,5 +55,5 @@ func (e findAccountError) StatusCode() int {
 }
 
 func (e findAccountError) Error() string {
-	return fmt.Sprintf("Can't find record an account with id `%v`", e.p)
+	return fmt.Sprintf("Can't find an account with id `%v`", e.p)
 }
