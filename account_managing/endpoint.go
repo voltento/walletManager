@@ -3,8 +3,7 @@ package account_managing
 import "github.com/go-kit/kit/endpoint"
 import "context"
 
-// Endpoints are a primary abstraction in go-kit. An endpoint represents a single RPC (method in our service interface)
-func MakeAddEndpoint(svc Service) endpoint.Endpoint {
+func makeAddEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		req := r.(request)
 		v, err := svc.createUser(req.Id, req.Currency, req.Amount)

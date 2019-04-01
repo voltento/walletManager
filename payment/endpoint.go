@@ -6,7 +6,7 @@ import (
 )
 import "context"
 
-func MakeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
+func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		req := r.(changeBalanceRequest)
 		v, err := svc.changeBalance(req)
@@ -17,7 +17,7 @@ func MakeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 	}
 }
 
-func MakeSendMoneyEndpoint(svc Service) endpoint.Endpoint {
+func makeSendMoneyEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		req := r.(sendMoneyRequest)
 		v, err := svc.sendMoney(req)

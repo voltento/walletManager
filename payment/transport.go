@@ -35,7 +35,7 @@ type changeBalanceResponse struct {
 
 func MakeChangeBalanceHandler(s Service) http.Handler {
 	return kithttp.NewServer(
-		MakeGetAccountsEndpoint(s),
+		makeGetAccountsEndpoint(s),
 		DecodeChangeBalanceRequest,
 		EncodeResponse,
 	)
@@ -62,7 +62,7 @@ type sendMoneyResponse struct {
 
 func MakeSendMoneyHandler(s Service) http.Handler {
 	return kithttp.NewServer(
-		MakeSendMoneyEndpoint(s),
+		makeSendMoneyEndpoint(s),
 		DecodeSendMoneyRequest,
 		EncodeResponse,
 	)

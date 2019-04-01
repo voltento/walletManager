@@ -29,7 +29,7 @@ type response struct {
 
 func MakeHandler(bs Service) http.Handler {
 	return kithttp.NewServer(
-		MakeAddEndpoint(bs),
+		makeAddEndpoint(bs),
 		DecodeRequest,
 		EncodeResponse,
 	)

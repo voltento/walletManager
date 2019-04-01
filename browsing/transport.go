@@ -21,7 +21,7 @@ type paymentResponse = database.Payment
 
 func MakeGetAccountsHandler(s Service) http.Handler {
 	return kithttp.NewServer(
-		MakeGetAccountsEndpoint(s),
+		makeGetAccountsEndpoint(s),
 		DecodeRequest,
 		EncodeResponse,
 	)
@@ -29,7 +29,7 @@ func MakeGetAccountsHandler(s Service) http.Handler {
 
 func MakeGetPaymentsHandler(s Service) http.Handler {
 	return kithttp.NewServer(
-		MakeGetPaymentsEndpoint(s),
+		makeGetPaymentsEndpoint(s),
 		DecodeRequest,
 		EncodeResponse,
 	)
