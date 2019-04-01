@@ -12,6 +12,10 @@ Get accounts
 
 `curl localhost:8080/browsing/accounts`
 
+Get payments
+
+`curl localhost:8080/browsing/browsing/payments`
+
 Change account balance
 
 `curl -XPUT -d'{"id":"James", "change_amount": 90}' localhost:8080/payment/change_balance`
