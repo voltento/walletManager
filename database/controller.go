@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/pursesManager/walletErrors"
+	"github.com/voltento/walletManager/walletErrors"
 )
 
 type Transaction interface {

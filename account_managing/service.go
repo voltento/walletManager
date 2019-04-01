@@ -3,7 +3,7 @@ package account_managing
 import (
 	"errors"
 	"fmt"
-	"github.com/voltento/pursesManager/database"
+	"github.com/voltento/walletManager/database"
 )
 
 type Service interface {

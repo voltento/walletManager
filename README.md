@@ -7,7 +7,8 @@
     CREATE TABLE account (
      id text PRIMARY KEY,
      currency text not null,
-     amount double precision not null
+     amount double precision not null,
+     constraint account_nonnegative check (amount >= 0)
     );
 
 

@@ -2,7 +2,7 @@ package browsing
 
 import (
 	"github.com/go-kit/kit/endpoint"
-	"github.com/voltento/pursesManager/walletErrors"
+	"github.com/voltento/walletManager/walletErrors"
 )
 import "context"
 

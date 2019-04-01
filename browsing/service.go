@@ -1,7 +1,7 @@
 package browsing
 
 import (
-	"github.com/voltento/pursesManager/database"
+	"github.com/voltento/walletManager/database"
 )
 
 type Service interface {
