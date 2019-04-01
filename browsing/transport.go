@@ -1,4 +1,4 @@
-package brawsing
+package browsing
 
 import (
 	"context"

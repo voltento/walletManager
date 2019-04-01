@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/voltento/pursesManager/account_managing"
-	"github.com/voltento/pursesManager/brawsing"
+	"github.com/voltento/pursesManager/browsing"
 	"github.com/voltento/pursesManager/database"
 	"github.com/voltento/pursesManager/payment"
 	"log"
@@ -22,9 +22,9 @@ func main() {
 	s := account_managing.CreateService(dbCtrl)
 	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("PUT")
 
-	b := brawsing.CreateService(dbCtrl)
-	r.Handle("/brawsing/accounts", brawsing.MakeGetAccountsHandler(b)).Methods("GET")
-	r.Handle("/brawsing/payments", brawsing.MakeGetPaymentsHandler(b)).Methods("GET")
+	b := browsing.CreateService(dbCtrl)
+	r.Handle("/browsing/accounts", browsing.MakeGetAccountsHandler(b)).Methods("GET")
+	r.Handle("/browsing/payments", browsing.MakeGetPaymentsHandler(b)).Methods("GET")
 
 	p := payment.CreateService(dbCtrl)
 	r.Handle("/payment/change_balance", payment.MakeChangeBalanceHandler(p)).Methods("PUT")

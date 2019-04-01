@@ -1,4 +1,4 @@
-package brawsing
+package browsing
 
 import (
 	"github.com/voltento/pursesManager/database"

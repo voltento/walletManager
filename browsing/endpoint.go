@@ -1,4 +1,4 @@
-package brawsing
+package browsing
 
 import "github.com/go-kit/kit/endpoint"
 import "context"

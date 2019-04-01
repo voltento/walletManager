@@ -27,7 +27,7 @@ Add new account
 
 Get accounts
 
-`curl localhost:8080/brawsing/accounts`
+`curl localhost:8080/browsing/accounts`
 
 Change account balance
 
