@@ -14,8 +14,8 @@ type Transaction interface {
 type WalletManager interface {
 	StartTransaction() (Transaction, error)
 	AddAccount(ac *Account) error
-	GetAllAccounts() ([]*Account, error)
-	GetPayments() ([]*Payment, error)
+	GetAllAccounts() ([]Account, error)
+	GetPayments() ([]Payment, error)
 	Close() error
 	GetAccount(id string) (*Account, error)
 	UpdateAccount(id string, acc *Account) error
@@ -148,8 +148,8 @@ func (m psqlManager) AddAccount(ac *Account) error {
 	return err
 }
 
-func (m psqlManager) GetAllAccounts() ([]*Account, error) {
-	var acc []*Account
+func (m psqlManager) GetAllAccounts() ([]Account, error) {
+	var acc []Account
 	_, err := m.getAccountsStmt.Query(&acc)
 	if err != nil {
 		return nil, err
@@ -158,8 +158,8 @@ func (m psqlManager) GetAllAccounts() ([]*Account, error) {
 	return acc, nil
 }
 
-func (m psqlManager) GetPayments() ([]*Payment, error) {
-	var ps []*Payment
+func (m psqlManager) GetPayments() ([]Payment, error) {
+	var ps []Payment
 	_, err := m.getAccountsStmt.Query(&ps)
 	if err != nil {
 		return nil, err
