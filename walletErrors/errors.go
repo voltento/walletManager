@@ -23,6 +23,10 @@ func (e httpError) Error() string {
 	return e.msg
 }
 
+func BuildGeneralQueryError(msg string) HttpError {
+	return httpError{code: 400, msg: msg}
+}
+
 func BuildProcessingError(er string) HttpError {
 	return httpError{code: 400, msg: fmt.Sprintf("The error occured during processin the query. Error: `%v`", er)}
 }
