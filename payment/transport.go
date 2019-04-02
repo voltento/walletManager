@@ -33,9 +33,8 @@ type changeBalanceRequest struct {
 }
 
 type changeBalanceResponse struct {
-	Response string   `json:"Response"`
-	Acc      *Account `json:"account,omitempty"`
-	Err      string   `json:"err,omitempty"`
+	Response string `json:"Response"`
+	Err      string `json:"err,omitempty"`
 }
 
 func MakeChangeBalanceHandler(s Service) http.Handler {

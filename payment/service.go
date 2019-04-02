@@ -22,34 +22,12 @@ type serviceImplementation struct {
 func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
-
-	tr, er := m.StartTransaction()
+	er := m.IncAccountBalance(r.Id, r.Amount)
 	if er != nil {
 		return nil, er
 	}
 
-	acc, er := m.GetAccount(r.Id)
-
-	if er != nil {
-		return &changeBalanceResponse{Response: "Field", Err: er.Error()}, nil
-	}
-
-	newAmount := acc.Amount + r.Amount
-	if newAmount < 0 {
-		return &changeBalanceResponse{Response: "Not enough balance", Acc: acc}, nil
-	} else {
-		acc.Amount = newAmount
-		er = m.UpdateAccount(acc.Id, acc)
-		if er != nil {
-			return &changeBalanceResponse{Response: "Field", Err: er.Error()}, nil
-		}
-		er = tr.Commit()
-		if er != nil {
-			return &changeBalanceResponse{Response: "Field", Err: er.Error()}, nil
-		}
-	}
-
-	return &changeBalanceResponse{Response: "Success", Acc: acc}, nil
+	return &changeBalanceResponse{Response: "Succeed"}, nil
 }
 
 func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error) {

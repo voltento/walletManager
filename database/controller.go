@@ -12,12 +12,15 @@ type Transaction interface {
 
 type WalletManager interface {
 	StartTransaction() (Transaction, error)
+	RunInTransaction(func() error) error
 	AddAccount(ac *Account) error
 	GetAllAccounts() ([]Account, error)
-	GetPayments() ([]Payment, error)
-	Close() error
 	GetAccount(id string) (*Account, error)
 	UpdateAccount(id string, acc *Account) error
+	IncAccountBalance(id string, changeAmount float64) error
+
+	GetPayments() ([]Payment, error)
+	Close() error
 	AddPayment(p *Payment) error
 }
 
@@ -76,6 +79,7 @@ type psqlManager struct {
 	updateAccountStmt *pg.Stmt
 	addPaymentStmt    *pg.Stmt
 	getPaymentsStmt   *pg.Stmt
+	incAccBalanceStmt *pg.Stmt
 }
 
 func (m psqlManager) Close() error {
@@ -99,7 +103,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 	}
 
 	var getPaymentsStmt *pg.Stmt
-	getPaymentsStmt, err = db.Prepare("select id, currency, amount from account;")
+	getPaymentsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
 	if err != nil {
 		return nil, err
 	}
@@ -117,13 +121,19 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 	}
 
 	var getAccountsStmt *pg.Stmt
-	getAccountsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
+	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
 	if err != nil {
 		return nil, err
 	}
 
 	var addPaymentStmt *pg.Stmt
 	addPaymentStmt, err = db.Prepare("insert into payment (from_account, to_account, amount) values ($1, $2, $3);")
+	if err != nil {
+		return nil, err
+	}
+
+	var incAccBalanceStmt *pg.Stmt
+	incAccBalanceStmt, err = db.Prepare("update account set amount=amount+$1 where id=$2;")
 	if err != nil {
 		return nil, err
 	}
@@ -135,12 +145,20 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 		getAccountStmt:    getAccountStmt,
 		updateAccountStmt: updateAccountStmt,
 		addPaymentStmt:    addPaymentStmt,
-		getPaymentsStmt:   getPaymentsStmt}
+		getPaymentsStmt:   getPaymentsStmt,
+		incAccBalanceStmt: incAccBalanceStmt}
 	return mgr, nil
 }
 
 func (m psqlManager) StartTransaction() (Transaction, error) {
 	return m.db.Begin()
+}
+
+func (m psqlManager) RunInTransaction(fn func() error) error {
+	fnWrp := func(tx *pg.Tx) error {
+		return fn()
+	}
+	return m.db.RunInTransaction(fnWrp)
 }
 
 func (m psqlManager) AddAccount(ac *Account) error {
@@ -198,5 +216,21 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 
 func (m psqlManager) AddPayment(p *Payment) error {
 	_, er := m.addPaymentStmt.Exec(p.From_account, p.To_account, p.Amount)
+	return er
+}
+
+func (m psqlManager) IncAccountBalance(id string, changeAmount float64) error {
+	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
+	if er != nil {
+		if isConstraintVialationError(er) {
+			return walletErrors.BuildFewBalanceError(id)
+		}
+		return er
+	}
+
+	if r.RowsAffected() == 0 {
+		return walletErrors.BuildFindAccountError(id)
+	}
+
 	return er
 }

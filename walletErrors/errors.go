@@ -10,50 +10,31 @@ type HttpError interface {
 	http.StatusCoder
 }
 
-func BuildProcessingError(p string) HttpError {
-	return processingError{p: p}
+type httpError struct {
+	code int
+	msg  string
 }
 
-type processingError struct {
-	p string
+func (e httpError) StatusCode() int {
+	return e.code
 }
 
-func (e processingError) StatusCode() int {
-	return 400
+func (e httpError) Error() string {
+	return e.msg
 }
 
-func (e processingError) Error() string {
-	return fmt.Sprintf("The error occured during processin the query. Error: `%v`", e.p)
+func BuildProcessingError(er string) HttpError {
+	return httpError{code: 400, msg: fmt.Sprintf("The error occured during processin the query. Error: `%v`", er)}
 }
 
-func BuildDecodeError(p string) HttpError {
-	return decodeError{p: p}
-}
-
-type decodeError struct {
-	p string
-}
-
-func (e decodeError) StatusCode() int {
-	return 400
-}
-
-func (e decodeError) Error() string {
-	return fmt.Sprintf("The error occured during decode the query. Error: `%v`", e.p)
+func BuildDecodeError(er string) HttpError {
+	return httpError{code: 400, msg: fmt.Sprintf("The error occured during processin the query. Error: `%v`", er)}
 }
 
 func BuildFindAccountError(acId string) HttpError {
-	return findAccountError{p: acId}
+	return httpError{code: 400, msg: fmt.Sprintf("Can't find an account with id `%v`", acId)}
 }
 
-type findAccountError struct {
-	p string
-}
-
-func (e findAccountError) StatusCode() int {
-	return 400
-}
-
-func (e findAccountError) Error() string {
-	return fmt.Sprintf("Can't find an account with id `%v`", e.p)
+func BuildFewBalanceError(acId string) HttpError {
+	return httpError{code: 400, msg: fmt.Sprintf("Few balance for the operation. Account id: `%v`", acId)}
 }
