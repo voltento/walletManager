@@ -68,7 +68,7 @@
 * **Error Response:**
 
   * **Code:** 400 <br />
-    **Content:** `{ error : <msg> }`
+    **Content:** `{ "error" : <msg> }`
     
   * **Code:** 200 <br />
       **Content:** `{"error": "No data for `payments`"}`
@@ -106,7 +106,7 @@
 * **Error Response:**
 
   * **Code:** 400 <br />
-    **Content:** `{ error : <msg> }`
+    **Content:** `{ "error" : <msg> }`
     
   * **Code:** 400 <br />
       **Content:** `{"error": "Account id already exists"}`
@@ -117,3 +117,77 @@
 * **Sample Call:**
 
   ```curl -XPUT -d'{"id":"f100", "currency": "USD", "amount": 100}' localhost:8080/account_managing/add/```
+  
+  
+**Transfer money**
+----
+  Transfer money between accounts.
+
+* **URL**
+
+  /payment/send_money
+
+* **Method:**
+
+  `PUT`
+  
+*  **URL Params**
+
+   None
+
+* **Data Params**
+
+   {"from_account":<acc_id> "to_account": <acc_id>, "change_amount": <float>}
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{"response":"Success"}`
+ 
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{"error": "Few balance for the operation. Account id: `f1`"}`
+    
+  * **Code:** 400 <br />
+    **Content:** `{"error": "Can't send 0 amount"}`
+
+* **Sample Call:**
+
+  ```curl -XPUT -d'{"from_account":"f1", "to_account": "f2"}' localhost:8080/payment/send_money```
+  
+
+  
+**Change account balance**
+----
+  Change account balance for amount.
+
+* **URL**
+
+  /payment/change_balance
+
+* **Method:**
+
+  `PUT`
+  
+*  **URL Params**
+
+   None
+
+* **Data Params**
+
+   {"id":<acc_id>, "change_amount": <float positive or negative>}
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `{"response":"Success"}`
+ 
+* **Error Response:**
+
+  * **Code:** 400 <br />
+    **Content:** `{"error": "Few balance for the operation. Account id: `f1`"}`
+
+* **Sample Call:**
+
+  ```curl -XPUT -d'{"id":"f1", "change_amount": 90}' localhost:8080/payment/change_balance```
