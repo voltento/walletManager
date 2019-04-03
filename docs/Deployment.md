@@ -1,6 +1,6 @@
 **Deploy**
 
-Run wallet mgr and database in one command with docker-compose
+Run the wallet mgr and the database in the one command with docker-compose
 
 `cd .deploy &&  docker-compose build && docker-compose up`
 
