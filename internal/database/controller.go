@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/walletErrors"
+	"github.com/voltento/walletManager/internal/walletErrors"
 )
 
 type Transaction interface {
@@ -11,7 +11,6 @@ type Transaction interface {
 }
 
 type WalletManager interface {
-	StartTransaction() (Transaction, error)
 	RunInTransaction(func() error) error
 	AddAccount(ac *Account) error
 	GetAllAccounts() ([]Account, error)
@@ -148,10 +147,6 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 		getPaymentsStmt:   getPaymentsStmt,
 		incAccBalanceStmt: incAccBalanceStmt}
 	return mgr, nil
-}
-
-func (m psqlManager) StartTransaction() (Transaction, error) {
-	return m.db.Begin()
 }
 
 func (m psqlManager) RunInTransaction(fn func() error) error {

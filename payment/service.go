@@ -2,8 +2,8 @@ package payment
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/database"
-	"github.com/voltento/walletManager/walletErrors"
+	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/walletErrors"
 )
 
 type Service interface {
