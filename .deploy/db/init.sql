@@ -14,3 +14,8 @@ CREATE TABLE payment (
  to_account text not null REFERENCES account(id),
  amount double precision not null
 );
+
+
+INSERT INTO account(id, currency, amount) VALUES('user1', 'USD', 10.0);
+INSERT INTO account(id, currency, amount) VALUES('user2', 'USD', 10.0);
+INSERT INTO account(id, currency, amount) VALUES('user3', 'RUB', 10.0);

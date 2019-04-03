@@ -9,13 +9,9 @@ Add new account
 
 `curl -XPUT -d'{"id":"f1", "currency": "USD"}' localhost:8080/account_managing/add/`
 
-Get accounts
-
-`curl localhost:8080/browsing/accounts`
-
 Get payments
 
-`curl localhost:8080/browsing/browsing/payments`
+``
 
 Change account balance
 
@@ -23,4 +19,4 @@ Change account balance
 
 Transfer money
 
-`curl -XPUT -d'{"from_account":"f1", "to_account": "f2", "change_amount": 90}' localhost:8080/payment/send_money`
+`curl -XPUT -d'{"from_account":"f1", "to_account": "f2", "change_amount": 1}' localhost:8080/payment/send_money`

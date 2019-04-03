@@ -9,10 +9,15 @@ type errorType struct {
 
 var (
 	constraintVialation = errorType{ind: byte(82), msg: "ExecConstraints"}
+	duplicateAccountId  = errorType{ind: byte(77), msg: "duplicate key value violates unique constraint \"account_pkey\""}
 )
 
-func isConstraintVialationError(er error) bool {
+func IsConstraintVialationError(er error) bool {
 	return checkPgErrorType(er, constraintVialation)
+}
+
+func IsAccIdDeplicate(er error) bool {
+	return checkPgErrorType(er, duplicateAccountId)
 }
 
 func checkPgErrorType(er error, expected errorType) bool {

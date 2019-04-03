@@ -23,6 +23,9 @@ func makeGetPaymentsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		v, er := svc.getPayments()
 		if er != nil {
+			if _, ok := er.(walletErrors.HttpError); ok {
+				return nil, er
+			}
 			return nil, walletErrors.BuildDecodeError(er.Error())
 		}
 		return v, nil

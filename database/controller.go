@@ -163,14 +163,22 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 
 func (m psqlManager) AddAccount(ac *Account) error {
 	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
+	if IsAccIdDeplicate(er) {
+		return walletErrors.BuildGeneralQueryError("Account id already exists")
+	}
+
 	return er
 }
 
 func (m psqlManager) GetAllAccounts() ([]Account, error) {
 	var acc []Account
-	_, er := m.getAccountsStmt.Query(&acc)
+	r, er := m.getAccountsStmt.Query(&acc)
 	if er != nil {
 		return nil, er
+	}
+
+	if r.RowsReturned() == 0 {
+		return nil, walletErrors.BuildNoDataError("accounts")
 	}
 
 	return acc, nil
@@ -178,9 +186,13 @@ func (m psqlManager) GetAllAccounts() ([]Account, error) {
 
 func (m psqlManager) GetPayments() ([]Payment, error) {
 	var ps []Payment
-	_, er := m.getAccountsStmt.Query(&ps)
+	r, er := m.getPaymentsStmt.Query(&ps)
 	if er != nil {
 		return nil, er
+	}
+
+	if r.RowsReturned() == 0 {
+		return nil, walletErrors.BuildNoDataError("payments")
 	}
 
 	return ps, nil
@@ -222,7 +234,7 @@ func (m psqlManager) AddPayment(p *Payment) error {
 func (m psqlManager) IncAccountBalance(id string, changeAmount float64) error {
 	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
-		if isConstraintVialationError(er) {
+		if IsConstraintVialationError(er) {
 			return walletErrors.BuildFewBalanceError(id)
 		}
 		return er

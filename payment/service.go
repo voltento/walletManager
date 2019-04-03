@@ -46,7 +46,9 @@ func (s serviceImplementation) transferMoney(m database.WalletManager, fromId st
 		return er
 	}
 
-	return nil
+	er = m.AddPayment(&database.Payment{From_account: fromId, To_account: toId, Amount: amount})
+
+	return er
 }
 
 func (s serviceImplementation) assertEqualCurrency(m database.WalletManager, acc1 string, acc2 string) error {
