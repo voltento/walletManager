@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/voltento/walletManager/account_managing"
 	"github.com/voltento/walletManager/browsing"
-	"github.com/voltento/walletManager/config"
+	"github.com/voltento/walletManager/internal/config"
 	"github.com/voltento/walletManager/internal/database"
 	"github.com/voltento/walletManager/payment"
 	"io/ioutil"
