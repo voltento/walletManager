@@ -7,11 +7,16 @@ import (
 	"strings"
 )
 
-func sendRequest(url string, method string, body string) (string, error) {
+type httpResp struct {
+	data string
+	code int
+}
+
+func sendRequest(url string, method string, body string) (httpResp, error) {
 	var jsonStr = []byte(body)
 	req, er := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
 	if er != nil {
-		return "", er
+		return httpResp{}, er
 	}
 
 	client := &http.Client{}
@@ -19,10 +24,11 @@ func sendRequest(url string, method string, body string) (string, error) {
 	if err != nil {
 		panic(err)
 	}
+
 	defer resp.Body.Close()
 	if data, er := ioutil.ReadAll(resp.Body); er != nil {
-		return "", er
+		return httpResp{}, er
 	} else {
-		return strings.Trim(string(data), "\n"), er
+		return httpResp{data: strings.Trim(string(data), "\n"), code: resp.StatusCode}, er
 	}
 }
