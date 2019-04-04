@@ -18,31 +18,39 @@ func TestCreateService(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    httpResp
+		want    CheckResp
 		wantErr bool
 	}{
 		{
-			name:    "Add account: ok",
-			args:    args{addUserArgs},
-			want:    httpResp{"{\"response\":\"Success\"}", 200},
+			name: "Add account: ok",
+			args: args{addUserArgs},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{"{\"response\":\"Success\"}", 200})
+			},
 			wantErr: false,
 		},
 		{
-			name:    "Add account: again",
-			args:    args{addUserArgs},
-			want:    httpResp{"{\"error\": \"Account id already exists\"}", 400},
+			name: "Add account: again",
+			args: args{addUserArgs},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{"{\"error\": \"Account id already exists\"}", 400})
+			},
 			wantErr: false,
 		},
 		{
-			name:    "Add account: miss id",
-			args:    args{fmt.Sprintf("{\"currency\": \"USD\", \"amount\": 100}")},
-			want:    httpResp{"{\"error\": \"got empty value for mandatory field `id`\"}", 400},
+			name: "Add account: miss id",
+			args: args{fmt.Sprintf("{\"currency\": \"USD\", \"amount\": 100}")},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{"{\"error\": \"got empty value for mandatory field `id`\"}", 400})
+			},
 			wantErr: false,
 		},
 		{
-			name:    "Add account: miss id",
-			args:    args{fmt.Sprintf("{\"id\":\"test_%v\", \"amount\": 100}", rand.Intn(100000))},
-			want:    httpResp{"{\"error\": \"got empty value for mandatory field `currency`\"}", 400},
+			name: "Add account: miss id",
+			args: args{fmt.Sprintf("{\"id\":\"test_%v\", \"amount\": 100}", rand.Intn(100000))},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{"{\"error\": \"got empty value for mandatory field `currency`\"}", 400})
+			},
 			wantErr: false,
 		},
 	}
@@ -53,8 +61,8 @@ func TestCreateService(t *testing.T) {
 				t.Errorf("sendRequest() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("sendRequest() = %v, want %v", got, tt.want)
+			if err = tt.want(got); err != nil {
+				t.Error(err.Error())
 			}
 		})
 	}

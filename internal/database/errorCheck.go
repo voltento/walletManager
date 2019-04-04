@@ -16,7 +16,7 @@ func IsConstraintVialationError(er error) bool {
 	return checkPgErrorType(er, constraintVialation)
 }
 
-func IsAccIdDeplicate(er error) bool {
+func IsAccIdDuplicate(er error) bool {
 	return checkPgErrorType(er, duplicateAccountId)
 }
 

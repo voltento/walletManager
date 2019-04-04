@@ -158,7 +158,7 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 
 func (m psqlManager) AddAccount(ac *Account) error {
 	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
-	if IsAccIdDeplicate(er) {
+	if IsAccIdDuplicate(er) {
 		return walletErrors.BuildGeneralQueryError("Account id already exists")
 	}
 
