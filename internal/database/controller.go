@@ -11,10 +11,10 @@ type WalletManager interface {
 	RunInTransaction(func() error) error
 
 	// Add an account
-	AddAccount(ac *Account) error
+	AddAccount(ac Account) error
 
 	// Add an payment
-	AddPayment(p *Payment) error
+	AddPayment(p Payment) error
 
 	// Get all accounts
 	GetAllAccounts() ([]Account, error)
@@ -26,7 +26,7 @@ type WalletManager interface {
 	GetPayments() ([]Payment, error)
 
 	// Update the account
-	UpdateAccount(id string, acc *Account) error
+	UpdateAccount(id string, acc Account) error
 
 	// Change the account balance
 	ChangeAccountBalance(id string, changeAmount float64) error
@@ -174,7 +174,7 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 	return m.db.RunInTransaction(fnWrp)
 }
 
-func (m psqlManager) AddAccount(ac *Account) error {
+func (m psqlManager) AddAccount(ac Account) error {
 	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
 	if IsAccIdDuplicate(er) {
 		return utils.BuildGeneralQueryError("Account id already exists")
@@ -211,7 +211,7 @@ func (m psqlManager) GetPayments() ([]Payment, error) {
 	return ps, nil
 }
 
-func (m psqlManager) UpdateAccount(id string, acc *Account) error {
+func (m psqlManager) UpdateAccount(id string, acc Account) error {
 	r, er := m.updateAccountStmt.Exec(acc.Id, acc.Currency, acc.Amount, id)
 	if er != nil {
 		return er
@@ -239,7 +239,7 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 	return acc, nil
 }
 
-func (m psqlManager) AddPayment(p *Payment) error {
+func (m psqlManager) AddPayment(p Payment) error {
 	_, er := m.addPaymentStmt.Exec(p.From_account, p.To_account, p.Amount)
 	return er
 }

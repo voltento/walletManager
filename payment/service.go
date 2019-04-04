@@ -50,7 +50,7 @@ func (s serviceImplementation) transferMoney(m database.WalletManager, fromId st
 		return er
 	}
 
-	er = m.AddPayment(&database.Payment{From_account: fromId, To_account: toId, Amount: amount})
+	er = m.AddPayment(database.Payment{From_account: fromId, To_account: toId, Amount: amount})
 
 	return er
 }
