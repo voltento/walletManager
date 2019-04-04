@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func TestCreateService(t *testing.T) {
+func TestAddAccount(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	accId := "test_" + strconv.Itoa(rand.Intn(100000))
@@ -58,6 +58,7 @@ func TestCreateService(t *testing.T) {
 			wantErr: false,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := sendRequest(addAccountUrl, "PUT", tt.args.body)

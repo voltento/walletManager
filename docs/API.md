@@ -154,7 +154,7 @@
 
 * **Sample Call:**
 
-  ```curl -XPUT -d'{"from_account":"f1", "to_account": "f2"}' localhost:8080/payment/send_money```
+  ```curl -XPUT -d'{"from_account":"f1", "to_account": "f2", "amount": 10.0}' localhost:8080/payment/send_money```
   
 
   

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +16,7 @@ const (
 	walltMgrAddr   = "http://:8080"
 	addAccountUrl  = walltMgrAddr + "/accmamaging/add/"
 	getAccountsUrl = walltMgrAddr + "/browsing/accounts"
+	sendMoneyUrl   = walltMgrAddr + "/payment/send_money"
 )
 
 func assertEqHttpResp(resp httpResp, expected httpResp) error {
@@ -56,4 +58,14 @@ func getAccount(id string) (accmamaging.Account, error) {
 	}
 
 	return accmamaging.Account{}, errors.New(fmt.Sprintf("Can't find account with id='%v'", id))
+}
+
+func addAccount(ac accmamaging.Account) error {
+	var b bytes.Buffer
+	er := json.NewEncoder(&b).Encode(ac)
+	if er != nil {
+		return er
+	}
+	_, er = sendRequest(addAccountUrl, "PUT", b.String())
+	return er
 }
