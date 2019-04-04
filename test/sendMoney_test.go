@@ -83,6 +83,35 @@ func TestSendPayment(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Send money: diff currencies",
+			args: args{fmt.Sprintf("{\"from_account\":\"%v\", \"to_account\": \"%v\", \"change_amount\": %v}",
+				accUsd[1].Id,
+				accEur[0].Id,
+				1),
+			},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{
+					data: "{\"error\": \"Can't transfer between account with different currency\"}",
+					code: 400,
+				})
+			},
+			wantErr: false,
+		},
+		{
+			name: "Send money: diff currencies",
+			args: args{fmt.Sprintf("{\"from_account\":\"%v\", \"to_account\": \"%v\", \"change_amount\": 0}",
+				accUsd[1].Id,
+				accUsd[0].Id),
+			},
+			want: func(r httpResp) error {
+				return assertEqHttpResp(r, httpResp{
+					data: "{\"error\": \"Can't send 0 amount\"}",
+					code: 400,
+				})
+			},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
