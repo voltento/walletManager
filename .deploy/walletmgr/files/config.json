@@ -5,6 +5,6 @@
     "address": "db:5432",
     "user": "user",
     "password": "pass",
-    "pool_size": 10
+    "pool_size": 2
   }
 }

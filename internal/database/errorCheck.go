@@ -1,6 +1,8 @@
 package database
 
-import "github.com/go-pg/pg"
+import (
+	"github.com/go-pg/pg"
+)
 
 type errorType struct {
 	ind byte
@@ -9,7 +11,7 @@ type errorType struct {
 
 var (
 	constraintVialation = errorType{ind: byte(82), msg: "ExecConstraints"}
-	duplicateAccountId  = errorType{ind: byte(77), msg: "duplicate key value violates unique constraint \"account_pkey\""}
+	duplicateAccountId  = errorType{ind: byte(67), msg: "23505"}
 )
 
 func IsConstraintVialationError(er error) bool {
