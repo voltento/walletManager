@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
 
-type Account = database.Account
+type Account = httpQueryModels.Account
 
 type ChangeBalanceRequest struct {
 	Id     string  `json:"id"`
