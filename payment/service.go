@@ -22,7 +22,7 @@ type serviceImplementation struct {
 func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
-	er := m.IncAccountBalance(r.Id, r.Amount)
+	er := m.ChangeAccountBalance(r.Id, r.Amount)
 	if er != nil {
 		return nil, er
 	}

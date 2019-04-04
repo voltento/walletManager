@@ -2,32 +2,48 @@ package database
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
-type Payment = httpQueryModels.Payment
-
 type WalletManager interface {
+	// Run some logic in the transaction.
+	// Be careful, it uses read commitment transaction isolation in basic implementation
 	RunInTransaction(func() error) error
-	AddAccount(ac *Account) error
-	GetAllAccounts() ([]Account, error)
-	GetAccount(id string) (*Account, error)
-	UpdateAccount(id string, acc *Account) error
-	IncAccountBalance(id string, changeAmount float64) error
 
-	GetPayments() ([]Payment, error)
-	Close() error
+	// Add an account
+	AddAccount(ac *Account) error
+
+	// Add an payment
 	AddPayment(p *Payment) error
+
+	// Get all accounts
+	GetAllAccounts() ([]Account, error)
+
+	// Get the account by id
+	GetAccount(id string) (*Account, error)
+
+	// Get all payments
+	GetPayments() ([]Payment, error)
+
+	// Update the account
+	UpdateAccount(id string, acc *Account) error
+
+	// Change the account balance
+	ChangeAccountBalance(id string, changeAmount float64) error
+
+	Close() error
 }
 
 type Closer func()
 
 type WalletMgrCluster interface {
+	// Get wallet manager from the pool
 	GetWalletMgr() (WalletManager, Closer)
+
 	Close() error
 }
 
+// Wallet manager pull
 type walletMgrCluster struct {
 	mgrPool    chan WalletManager
 	mgrStorage []WalletManager
@@ -45,12 +61,14 @@ func (c walletMgrCluster) Close() error {
 	return er
 }
 
+// Take wallet manager from the pool, it will be returned when the closer will be closed
 func (c walletMgrCluster) GetWalletMgr() (WalletManager, Closer) {
 	mgr := <-c.mgrPool
 
 	return mgr, func() { c.mgrPool <- mgr }
 }
 
+// Create cluster for wallet managers
 func CreateWalletMgrCluster(user string, pswrd string, dbName string, addr string, sz int) (WalletMgrCluster, error) {
 	cluster := walletMgrCluster{mgrPool: make(chan WalletManager, sz), mgrStorage: make([]WalletManager, sz)}
 	var er error
@@ -67,6 +85,7 @@ func CreateWalletMgrCluster(user string, pswrd string, dbName string, addr strin
 	return cluster, nil
 }
 
+// Implementation of WalletManager
 type psqlManager struct {
 	db *pg.DB
 
@@ -83,6 +102,7 @@ func (m psqlManager) Close() error {
 	return m.db.Close()
 }
 
+// Create one wallet manager
 func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) (WalletManager, error) {
 	db := pg.Connect(&pg.Options{
 		User:     user,
@@ -224,10 +244,10 @@ func (m psqlManager) AddPayment(p *Payment) error {
 	return er
 }
 
-func (m psqlManager) IncAccountBalance(id string, changeAmount float64) error {
+func (m psqlManager) ChangeAccountBalance(id string, changeAmount float64) error {
 	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
-		if IsConstraintVialationError(er) {
+		if IsConstraintViolationError(er) {
 			return utils.BuildFewBalanceError(id)
 		}
 		return er

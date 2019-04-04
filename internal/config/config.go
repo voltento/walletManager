@@ -1,14 +1,25 @@
 package config
 
 type Config struct {
+	// Address where start listening for ms
 	Addr string `json:"address"`
-	Db   db     `json:"db"`
+	// Database config
+	Db db `json:"db"`
 }
 
 type db struct {
-	Name       string `json:"name"`
-	Addr       string `json:"address"`
-	User       string `json:"user"`
-	Password   string `json:"password"`
-	DbPoolSize int    `json:"pool_size"`
+	// Database name
+	Name string `json:"name"`
+
+	// Database address
+	Addr string `json:"address"`
+
+	// User name
+	User string `json:"user"`
+
+	// Password
+	Password string `json:"password"`
+
+	// Size of database clients pool
+	DbPoolSize int `json:"pool_size"`
 }

@@ -17,3 +17,8 @@ type GeneralResponse struct {
 	Response string `json:"response"`
 	Err      string `json:"err,omitempty"`
 }
+
+type Error struct {
+	Msg   string `json:"msg"`
+	Error string `json:"error"`
+}
