@@ -23,6 +23,7 @@ func TestBrawsAccount(t *testing.T) {
 	er := addAccount(ac)
 	if er != nil {
 		t.Error(er.Error())
+		return
 	}
 
 	tests := []struct {

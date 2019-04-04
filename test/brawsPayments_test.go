@@ -21,6 +21,7 @@ func TestBrawsPayments(t *testing.T) {
 	_, er = sendRequest(sendMoneyUrl, "PUT", sendMoneyQuery)
 	if er != nil {
 		t.Error(er.Error())
+		return
 	}
 
 	tests := []struct {

@@ -16,12 +16,13 @@ func TestSendPayment(t *testing.T) {
 	accUsd, er = addAccountsWithCurrency("USD", 2)
 	if er != nil {
 		t.Error(er.Error())
+		return
 	}
 
 	accEur, er = addAccountsWithCurrency("EUR", 1)
 	if er != nil {
 		t.Error(er.Error())
-		print(accEur)
+		return
 	}
 
 	type args struct {
