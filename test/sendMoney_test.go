@@ -3,27 +3,8 @@ package test
 import (
 	"fmt"
 	"github.com/voltento/walletManager/accmamaging"
-	"math/rand"
-	"strconv"
 	"testing"
-	"time"
 )
-
-func addUsers(currency string, count int) ([]accmamaging.Account, error) {
-	var er error
-	rand.Seed(time.Now().UTC().UnixNano())
-
-	accs := make([]accmamaging.Account, 0, count)
-	for i := 0; i < count; i += 1 {
-		ac := accmamaging.Account{Id: "test_" + strconv.Itoa(rand.Intn(10000000)), Currency: currency, Amount: 10}
-		if er = addAccount(ac); er != nil {
-			return nil, er
-		}
-		accs = append(accs, ac)
-	}
-
-	return accs, nil
-}
 
 func TestSendPayment(t *testing.T) {
 	var (
@@ -32,12 +13,12 @@ func TestSendPayment(t *testing.T) {
 		accEur []accmamaging.Account
 	)
 
-	accUsd, er = addUsers("USD", 2)
+	accUsd, er = addAccountsWithCurrency("USD", 2)
 	if er != nil {
 		t.Error(er.Error())
 	}
 
-	accEur, er = addUsers("EUR", 1)
+	accEur, er = addAccountsWithCurrency("EUR", 1)
 	if er != nil {
 		t.Error(er.Error())
 		print(accEur)

@@ -6,8 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/voltento/walletManager/accmamaging"
+	"math/rand"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type CheckResp = func(resp httpResp) error
@@ -17,6 +20,7 @@ const (
 	addAccountUrl  = walltMgrAddr + "/accmamaging/add/"
 	getAccountsUrl = walltMgrAddr + "/browsing/accounts"
 	sendMoneyUrl   = walltMgrAddr + "/payment/send_money"
+	getPaymentsUrl = walltMgrAddr + "/browsing/payments"
 )
 
 func assertEqHttpResp(resp httpResp, expected httpResp) error {
@@ -68,4 +72,20 @@ func addAccount(ac accmamaging.Account) error {
 	}
 	_, er = sendRequest(addAccountUrl, "PUT", b.String())
 	return er
+}
+
+func addAccountsWithCurrency(currency string, accCount int) ([]accmamaging.Account, error) {
+	var er error
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	accs := make([]accmamaging.Account, 0, accCount)
+	for i := 0; i < accCount; i += 1 {
+		ac := accmamaging.Account{Id: "test_" + strconv.Itoa(rand.Intn(10000000)), Currency: currency, Amount: 10}
+		if er = addAccount(ac); er != nil {
+			return nil, er
+		}
+		accs = append(accs, ac)
+	}
+
+	return accs, nil
 }

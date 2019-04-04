@@ -25,9 +25,6 @@ func TestBrawsAccount(t *testing.T) {
 		t.Error(er.Error())
 	}
 
-	type args struct {
-		body string
-	}
 	tests := []struct {
 		name    string
 		want    CheckResp
