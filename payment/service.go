@@ -3,7 +3,7 @@ package payment
 import (
 	"fmt"
 	"github.com/voltento/walletManager/internal/database"
-	"github.com/voltento/walletManager/internal/walletErrors"
+	"github.com/voltento/walletManager/internal/utils"
 )
 
 type Service interface {
@@ -67,7 +67,7 @@ func (s serviceImplementation) assertEqualCurrency(m database.WalletManager, acc
 	}
 
 	if fromAcc.Currency != toAcc.Currency {
-		return walletErrors.BuildGeneralQueryError(fmt.Sprintf("Can't transfer between account with different currency"))
+		return utils.BuildGeneralQueryError(fmt.Sprintf("Can't transfer between account with different currency"))
 	}
 
 	return nil
@@ -77,22 +77,22 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 	var er error
 
 	if r.Amount == 0 {
-		er = walletErrors.BuildGeneralQueryError(fmt.Sprintf("Can't send 0 amount"))
+		er = utils.BuildGeneralQueryError(fmt.Sprintf("Can't send 0 amount"))
 		return nil, er
 	}
 
 	if r.FromAccId == "" {
-		er = walletErrors.BuildGeneralQueryError(fmt.Sprintf("From account param can't be empty"))
+		er = utils.BuildGeneralQueryError(fmt.Sprintf("From account param can't be empty"))
 		return nil, er
 	}
 
 	if r.ToAccId == "" {
-		er := walletErrors.BuildGeneralQueryError(fmt.Sprintf("To account param can't be empty"))
+		er := utils.BuildGeneralQueryError(fmt.Sprintf("To account param can't be empty"))
 		return nil, er
 	}
 
 	if r.FromAccId == r.ToAccId {
-		er = walletErrors.BuildGeneralQueryError(fmt.Sprintf("Can't transfer from the same account"))
+		er = utils.BuildGeneralQueryError(fmt.Sprintf("Can't transfer from the same account"))
 		return nil, er
 	}
 

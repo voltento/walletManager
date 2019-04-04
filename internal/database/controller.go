@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/internal/walletErrors"
+	"github.com/voltento/walletManager/internal/utils"
 )
 
 type Transaction interface {
@@ -159,7 +159,7 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 func (m psqlManager) AddAccount(ac *Account) error {
 	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
 	if IsAccIdDuplicate(er) {
-		return walletErrors.BuildGeneralQueryError("Account id already exists")
+		return utils.BuildGeneralQueryError("Account id already exists")
 	}
 
 	return er
@@ -173,7 +173,7 @@ func (m psqlManager) GetAllAccounts() ([]Account, error) {
 	}
 
 	if r.RowsReturned() == 0 {
-		return nil, walletErrors.BuildNoDataError("accounts")
+		return nil, utils.BuildNoDataError("accounts")
 	}
 
 	return acc, nil
@@ -187,7 +187,7 @@ func (m psqlManager) GetPayments() ([]Payment, error) {
 	}
 
 	if r.RowsReturned() == 0 {
-		return nil, walletErrors.BuildNoDataError("payments")
+		return nil, utils.BuildNoDataError("payments")
 	}
 
 	return ps, nil
@@ -200,7 +200,7 @@ func (m psqlManager) UpdateAccount(id string, acc *Account) error {
 	}
 
 	if r.RowsAffected() == 0 {
-		return walletErrors.BuildFindAccountError(id)
+		return utils.BuildFindAccountError(id)
 	}
 
 	return nil
@@ -215,7 +215,7 @@ func (m psqlManager) GetAccount(id string) (*Account, error) {
 	}
 
 	if result.RowsReturned() == 0 {
-		return nil, walletErrors.BuildFindAccountError(id)
+		return nil, utils.BuildFindAccountError(id)
 	}
 
 	return acc, nil
@@ -230,13 +230,13 @@ func (m psqlManager) IncAccountBalance(id string, changeAmount float64) error {
 	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
 		if IsConstraintVialationError(er) {
-			return walletErrors.BuildFewBalanceError(id)
+			return utils.BuildFewBalanceError(id)
 		}
 		return er
 	}
 
 	if r.RowsAffected() == 0 {
-		return walletErrors.BuildFindAccountError(id)
+		return utils.BuildFindAccountError(id)
 	}
 
 	return er

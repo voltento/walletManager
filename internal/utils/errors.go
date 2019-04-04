@@ -1,4 +1,4 @@
-package walletErrors
+package utils
 
 import (
 	"fmt"
@@ -45,4 +45,8 @@ func BuildFewBalanceError(acId string) HttpError {
 
 func BuildNoDataError(acId string) HttpError {
 	return httpError{code: 200, msg: fmt.Sprintf("No data for `%v`", acId)}
+}
+
+func BuildEmptyFieldError(fieldName string) error {
+	return BuildGeneralQueryError(fmt.Sprintf("got empty value for mandatory field `%v`", fieldName))
 }

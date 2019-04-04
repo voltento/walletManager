@@ -3,10 +3,11 @@ package accmamaging
 import (
 	"fmt"
 	"github.com/voltento/walletManager/internal/database"
-	"github.com/voltento/walletManager/internal/walletErrors"
+	"github.com/voltento/walletManager/internal/utils"
 )
 
 type Service interface {
+	// Create user account
 	createUser(id string, currency string, balance float64) (string, error)
 }
 
@@ -22,15 +23,15 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 	if id == "" {
-		return "", buildEmptyFieldError("id")
+		return "", utils.BuildEmptyFieldError("id")
 	}
 
 	if currency == "" {
-		return "", buildEmptyFieldError("currency")
+		return "", utils.BuildEmptyFieldError("currency")
 	}
 
 	if balance < 0 {
-		return "", walletErrors.BuildGeneralQueryError(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
+		return "", utils.BuildGeneralQueryError(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
 	}
 
 	er := m.AddAccount(&database.Account{Id: id, Currency: currency, Amount: balance})
@@ -39,8 +40,4 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 	}
 
 	return "Success", nil
-}
-
-func buildEmptyFieldError(fieldName string) error {
-	return walletErrors.BuildGeneralQueryError(fmt.Sprintf("got empty value for mandatory field `%v`", fieldName))
 }

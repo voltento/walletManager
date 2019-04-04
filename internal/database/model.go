@@ -1,10 +1,8 @@
 package database
 
-type Account struct {
-	Id       string  `json:"id"`
-	Currency string  `json:"currency"`
-	Amount   float64 `json:"amount"`
-}
+import "github.com/voltento/walletManager/internal/httpQueryModels"
+
+type Account = httpQueryModels.Account
 
 type Payment struct {
 	Id           int

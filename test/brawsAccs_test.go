@@ -3,7 +3,7 @@ package test
 import (
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/accmamaging"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"math/rand"
 	"reflect"
 	"strconv"
@@ -14,7 +14,7 @@ import (
 func TestBrawsAccount(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	ac := accmamaging.Account{
+	ac := httpQueryModels.Account{
 		Id:       "test_" + strconv.Itoa(rand.Intn(100000)),
 		Currency: "USD",
 		Amount:   10,

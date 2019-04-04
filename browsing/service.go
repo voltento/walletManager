@@ -2,10 +2,14 @@ package browsing
 
 import (
 	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 )
 
 type Service interface {
-	getUsers() ([]accResponse, error)
+	// Get all users accounts
+	getUsers() ([]httpQueryModels.Account, error)
+
+	// Get all payments
 	getPayments() ([]paymentResponse, error)
 }
 
@@ -17,7 +21,7 @@ type serviceImplementation struct {
 	c database.WalletMgrCluster
 }
 
-func (s serviceImplementation) getUsers() ([]accResponse, error) {
+func (s serviceImplementation) getUsers() ([]httpQueryModels.Account, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 

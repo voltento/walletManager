@@ -2,15 +2,15 @@ package test
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/accmamaging"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"testing"
 )
 
 func TestSendPayment(t *testing.T) {
 	var (
 		er     error
-		accUsd []accmamaging.Account
-		accEur []accmamaging.Account
+		accUsd []httpQueryModels.Account
+		accEur []httpQueryModels.Account
 	)
 
 	accUsd, er = addAccountsWithCurrency("USD", 2)

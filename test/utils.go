@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/accmamaging"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"math/rand"
 	"reflect"
 	"strconv"
@@ -30,13 +30,13 @@ func assertEqHttpResp(resp httpResp, expected httpResp) error {
 	return nil
 }
 
-func getAccounts() ([]accmamaging.Account, error) {
+func getAccounts() ([]httpQueryModels.Account, error) {
 	resp, er := sendRequest(getAccountsUrl, "GET", "")
 	if er != nil {
 		return nil, er
 	}
 
-	var accs []accmamaging.Account
+	var accs []httpQueryModels.Account
 	er = json.NewDecoder(strings.NewReader(resp.data)).Decode(&accs)
 	if er != nil {
 		return nil, er
@@ -49,10 +49,10 @@ func assertAccExists(id string) error {
 	return er
 }
 
-func getAccount(id string) (accmamaging.Account, error) {
+func getAccount(id string) (httpQueryModels.Account, error) {
 	accs, er := getAccounts()
 	if er != nil {
-		return accmamaging.Account{}, nil
+		return httpQueryModels.Account{}, nil
 	}
 
 	for _, ac := range accs {
@@ -61,10 +61,10 @@ func getAccount(id string) (accmamaging.Account, error) {
 		}
 	}
 
-	return accmamaging.Account{}, errors.New(fmt.Sprintf("Can't find account with id='%v'", id))
+	return httpQueryModels.Account{}, errors.New(fmt.Sprintf("Can't find account with id='%v'", id))
 }
 
-func addAccount(ac accmamaging.Account) error {
+func addAccount(ac httpQueryModels.Account) error {
 	var b bytes.Buffer
 	er := json.NewEncoder(&b).Encode(ac)
 	if er != nil {
@@ -74,13 +74,13 @@ func addAccount(ac accmamaging.Account) error {
 	return er
 }
 
-func addAccountsWithCurrency(currency string, accCount int) ([]accmamaging.Account, error) {
+func addAccountsWithCurrency(currency string, accCount int) ([]httpQueryModels.Account, error) {
 	var er error
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	accs := make([]accmamaging.Account, 0, accCount)
+	accs := make([]httpQueryModels.Account, 0, accCount)
 	for i := 0; i < accCount; i += 1 {
-		ac := accmamaging.Account{Id: "test_" + strconv.Itoa(rand.Intn(10000000)), Currency: currency, Amount: 10}
+		ac := httpQueryModels.Account{Id: "test_" + strconv.Itoa(rand.Intn(10000000)), Currency: currency, Amount: 10}
 		if er = addAccount(ac); er != nil {
 			return nil, er
 		}

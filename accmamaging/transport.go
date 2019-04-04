@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/walletErrors"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
+	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
 
 func DecodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request request
+	var request httpQueryModels.Account
 	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
 		return nil, er
 	}
@@ -19,22 +20,9 @@ func DecodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	er := json.NewEncoder(w).Encode(response)
 	if er != nil {
-		er = walletErrors.BuildProcessingError(er.Error())
+		er = utils.BuildProcessingError(er.Error())
 	}
 	return er
-}
-
-type Account struct {
-	Id       string  `json:"id"`
-	Currency string  `json:"currency"`
-	Amount   float64 `json:"amount"`
-}
-
-type request = Account
-
-type response struct {
-	Response string `json:"response"`
-	Err      string `json:"err,omitempty"`
 }
 
 func MakeHandler(bs Service) http.Handler {

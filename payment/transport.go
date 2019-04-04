@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/voltento/walletManager/internal/database"
-	"github.com/voltento/walletManager/internal/walletErrors"
+	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
 
@@ -22,7 +22,7 @@ func DecodeChangeBalanceRequest(_ context.Context, r *http.Request) (interface{}
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	er := json.NewEncoder(w).Encode(response)
 	if er != nil {
-		er = walletErrors.BuildProcessingError(er.Error())
+		er = utils.BuildProcessingError(er.Error())
 	}
 	return er
 }
