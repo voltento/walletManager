@@ -3,15 +3,16 @@ package payment
 import (
 	"fmt"
 	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
 type Service interface {
 	// Change account balance for amount
-	changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error)
+	changeBalance(r ChangeBalanceRequest) (*httpQueryModels.GeneralResponse, error)
 
 	// Send money from one account to another
-	sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error)
+	sendMoney(r SendMoneyRequest) (*httpQueryModels.GeneralResponse, error)
 }
 
 func CreateService(c database.WalletMgrCluster) Service {
@@ -22,7 +23,7 @@ type serviceImplementation struct {
 	c database.WalletMgrCluster
 }
 
-func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error) {
+func (s serviceImplementation) changeBalance(r ChangeBalanceRequest) (*httpQueryModels.GeneralResponse, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 	er := m.ChangeAccountBalance(r.Id, r.Amount)
@@ -30,7 +31,7 @@ func (s serviceImplementation) changeBalance(r changeBalanceRequest) (*changeBal
 		return nil, er
 	}
 
-	return &changeBalanceResponse{Response: "Succeed"}, nil
+	return &httpQueryModels.GeneralResponse{Response: "Succeed"}, nil
 }
 
 func (s serviceImplementation) transferMoney(m database.WalletManager, fromId string, toId string, amount float64) error {
@@ -39,12 +40,12 @@ func (s serviceImplementation) transferMoney(m database.WalletManager, fromId st
 		return er
 	}
 
-	_, er = s.changeBalance(changeBalanceRequest{Id: fromId, Amount: -amount})
+	_, er = s.changeBalance(ChangeBalanceRequest{Id: fromId, Amount: -amount})
 	if er != nil {
 		return er
 	}
 
-	_, er = s.changeBalance(changeBalanceRequest{Id: toId, Amount: amount})
+	_, er = s.changeBalance(ChangeBalanceRequest{Id: toId, Amount: amount})
 	if er != nil {
 		return er
 	}
@@ -76,7 +77,7 @@ func (s serviceImplementation) assertEqualCurrency(m database.WalletManager, acc
 	return nil
 }
 
-func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error) {
+func (s serviceImplementation) sendMoney(r SendMoneyRequest) (*httpQueryModels.GeneralResponse, error) {
 	var er error
 
 	if r.Amount == 0 {
@@ -112,5 +113,5 @@ func (s serviceImplementation) sendMoney(r sendMoneyRequest) (*sendMoneyResponse
 		return nil, er
 	}
 
-	return &sendMoneyResponse{Response: "Success"}, nil
+	return &httpQueryModels.GeneralResponse{Response: "Success"}, nil
 }
