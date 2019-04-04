@@ -17,6 +17,7 @@ type httpError struct {
 	msg  string
 }
 
+// http.StatusCoder implementation
 func (e httpError) StatusCode() int {
 	return e.code
 }

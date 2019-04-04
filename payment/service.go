@@ -36,9 +36,6 @@ func (s serviceImplementation) changeBalance(r ChangeBalanceRequest) (*httpQuery
 
 func (s serviceImplementation) transferMoney(m database.WalletManager, fromId string, toId string, amount float64) error {
 	var er error
-	if er != nil {
-		return er
-	}
 
 	_, er = s.changeBalance(ChangeBalanceRequest{Id: fromId, Amount: -amount})
 	if er != nil {
