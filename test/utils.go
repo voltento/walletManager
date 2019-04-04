@@ -31,9 +31,29 @@ func getAccounts() ([]accmamaging.Account, error) {
 	}
 
 	var accs []accmamaging.Account
-	er = json.NewDecoder(strings.NewReader(resp.data)).Decode(accs)
+	er = json.NewDecoder(strings.NewReader(resp.data)).Decode(&accs)
 	if er != nil {
 		return nil, er
 	}
 	return accs, nil
+}
+
+func assertAccExists(id string) error {
+	_, er := getAccount(id)
+	return er
+}
+
+func getAccount(id string) (accmamaging.Account, error) {
+	accs, er := getAccounts()
+	if er != nil {
+		return accmamaging.Account{}, nil
+	}
+
+	for _, ac := range accs {
+		if ac.Id == id {
+			return ac, nil
+		}
+	}
+
+	return accmamaging.Account{}, errors.New(fmt.Sprintf("Can't find account with id='%v'", id))
 }

@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"math/rand"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -10,7 +11,8 @@ import (
 func TestCreateService(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	addUserArgs := fmt.Sprintf("{\"id\":\"test_%v\", \"currency\": \"USD\", \"amount\": 100}", rand.Intn(100000))
+	accId := "test_" + strconv.Itoa(rand.Intn(100000))
+	addUserArgs := fmt.Sprintf("{\"id\":\"%v\", \"currency\": \"USD\", \"amount\": 100}", accId)
 
 	type args struct {
 		body string
@@ -28,7 +30,8 @@ func TestCreateService(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"response\":\"Success\"}", 200})
 			},
-			wantErr: false,
+			wantErr:   false,
+			postCheck: func() error { return assertAccExists(accId) },
 		},
 		{
 			name: "Add account: again",
@@ -68,7 +71,7 @@ func TestCreateService(t *testing.T) {
 			if tt.postCheck != nil {
 				err = tt.postCheck()
 				if err != nil {
-					t.Error()
+					t.Error(err.Error())
 				}
 			}
 		})
