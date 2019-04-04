@@ -5,11 +5,13 @@ import (
 	"github.com/go-kit/kit/transport/http"
 )
 
+// Http error interface for sending error message and http return code
 type HttpError interface {
 	error
 	http.StatusCoder
 }
 
+// HttpError implementation
 type httpError struct {
 	code int
 	msg  string
@@ -19,10 +21,12 @@ func (e httpError) StatusCode() int {
 	return e.code
 }
 
+// Build json response from the error
 func (e httpError) Error() string {
 	return fmt.Sprintf("{\"error\": \"%v\"}", e.msg)
 }
 
+// General purpose error
 func BuildGeneralQueryError(msg string) HttpError {
 	return httpError{code: 400, msg: msg}
 }

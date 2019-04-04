@@ -7,7 +7,10 @@ import (
 )
 
 type Service interface {
+	// Change account balance for amount
 	changeBalance(r changeBalanceRequest) (*changeBalanceResponse, error)
+
+	// Send money from one account to another
 	sendMoney(r sendMoneyRequest) (*sendMoneyResponse, error)
 }
 

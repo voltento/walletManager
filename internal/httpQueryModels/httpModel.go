@@ -1,5 +1,7 @@
 package httpQueryModels
 
+// Data structure models for communication between clients and the wallet manager.
+
 type Account struct {
 	Id       string  `json:"id"`
 	Currency string  `json:"currency"`
@@ -13,12 +15,8 @@ type Payment struct {
 	To_account   string  `json:"to_account_id"`
 }
 
+// General response entity for queries which don't have some specific data in a response
 type GeneralResponse struct {
 	Response string `json:"response"`
 	Err      string `json:"err,omitempty"`
-}
-
-type Error struct {
-	Msg   string `json:"msg"`
-	Error string `json:"error"`
 }
