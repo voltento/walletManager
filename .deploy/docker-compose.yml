@@ -23,8 +23,8 @@ services:
         aliases:
           - walletmgr
     build:
-      context: .
-      dockerfile: walletmgr/Dockerfile
+      context: ../
+      dockerfile: .deploy/walletmgr/Dockerfile
     hostname: walletmgr
     depends_on:
       - "db"
