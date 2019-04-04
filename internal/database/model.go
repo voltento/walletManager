@@ -1,6 +1,6 @@
 package database
 
-import "github.com/voltento/walletManager/internal/httpQueryModels"
+import "github.com/voltento/walletManager/internal/httpModel"
 
-type Account = httpQueryModels.Account
-type Payment = httpQueryModels.Payment
+type Account = httpModel.Account
+type Payment = httpModel.Payment

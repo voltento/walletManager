@@ -2,15 +2,15 @@ package test
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/internal/httpQueryModels"
+	"github.com/voltento/walletManager/internal/httpModel"
 	"testing"
 )
 
 func TestSendPayment(t *testing.T) {
 	var (
 		er     error
-		accUsd []httpQueryModels.Account
-		accEur []httpQueryModels.Account
+		accUsd []httpModel.Account
+		accEur []httpModel.Account
 	)
 
 	accUsd, er = addAccountsWithCurrency("USD", 2)
@@ -58,7 +58,7 @@ func TestSendPayment(t *testing.T) {
 			},
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{
-					data: "{\"Response\":\"Success\"}",
+					data: "{\"response\":\"Success\"}",
 					code: 200,
 				})
 			},

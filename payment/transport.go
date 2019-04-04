@@ -4,26 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/httpQueryModels"
+	"github.com/voltento/walletManager/internal/httpModel"
 	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
 
-type Account = httpQueryModels.Account
-
-type ChangeBalanceRequest struct {
-	Id     string  `json:"id"`
-	Amount float64 `json:"change_amount"`
-}
-
-type SendMoneyRequest struct {
-	FromAccId string  `json:"from_account"`
-	ToAccId   string  `json:"to_account"`
-	Amount    float64 `json:"change_amount"`
-}
+type Account = httpModel.Account
 
 func DecodeChangeBalanceRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request ChangeBalanceRequest
+	var request httpModel.ChangeBalanceRequest
 	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
 		return nil, er
 	}
@@ -47,7 +36,7 @@ func MakeChangeBalanceHandler(s Service) http.Handler {
 }
 
 func DecodeSendMoneyRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request SendMoneyRequest
+	var request httpModel.SendMoneyRequest
 	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
 		return nil, er
 	}

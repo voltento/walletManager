@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/httpQueryModels"
+	"github.com/voltento/walletManager/internal/httpModel"
 	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
 
 func DecodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var request httpQueryModels.Account
+	var request httpModel.Account
 	if er := json.NewDecoder(r.Body).Decode(&request); er != nil {
 		return nil, er
 	}
