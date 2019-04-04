@@ -31,7 +31,7 @@ func (s serviceImplementation) changeBalance(r httpModel.ChangeBalanceRequest) (
 		return nil, er
 	}
 
-	return &httpModel.GeneralResponse{Response: "Succeed"}, nil
+	return &httpModel.GeneralResponse{Response: "Success"}, nil
 }
 
 func (s serviceImplementation) transferMoney(m database.WalletManager, fromId string, toId string, amount float64) error {

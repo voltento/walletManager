@@ -16,11 +16,12 @@ import (
 type CheckResp = func(resp httpResp) error
 
 const (
-	walltMgrAddr   = "http://:8080"
-	addAccountUrl  = walltMgrAddr + "/accmamaging/add/"
-	getAccountsUrl = walltMgrAddr + "/browsing/accounts"
-	sendMoneyUrl   = walltMgrAddr + "/payment/send_money"
-	getPaymentsUrl = walltMgrAddr + "/browsing/payments"
+	walltMgrAddr     = "http://:8080"
+	addAccountUrl    = walltMgrAddr + "/accmamaging/add/"
+	getAccountsUrl   = walltMgrAddr + "/browsing/accounts"
+	sendMoneyUrl     = walltMgrAddr + "/payment/send_money"
+	getPaymentsUrl   = walltMgrAddr + "/browsing/payments"
+	changeBalanceUrl = walltMgrAddr + "/payment/change_balance"
 )
 
 func assertEqHttpResp(resp httpResp, expected httpResp) error {

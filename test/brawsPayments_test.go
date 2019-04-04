@@ -13,6 +13,7 @@ func TestBrawsPayments(t *testing.T) {
 	accs, er := addAccountsWithCurrency("USD", 2)
 	if er != nil {
 		t.Error(er.Error())
+		return
 	}
 
 	sendMoneyQuery := fmt.Sprintf("{\"from_account\":\"%v\", \"to_account\": \"%v\", \"change_amount\": 1}",
