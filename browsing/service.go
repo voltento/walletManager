@@ -5,12 +5,14 @@ import (
 	"github.com/voltento/walletManager/internal/httpQueryModels"
 )
 
+type Payment = httpQueryModels.Payment
+
 type Service interface {
 	// Get all users accounts
 	getUsers() ([]httpQueryModels.Account, error)
 
 	// Get all payments
-	getPayments() ([]paymentResponse, error)
+	getPayments() ([]Payment, error)
 }
 
 func CreateService(c database.WalletMgrCluster) Service {
@@ -28,7 +30,7 @@ func (s serviceImplementation) getUsers() ([]httpQueryModels.Account, error) {
 	return m.GetAllAccounts()
 }
 
-func (s serviceImplementation) getPayments() ([]paymentResponse, error) {
+func (s serviceImplementation) getPayments() ([]Payment, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 

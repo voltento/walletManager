@@ -2,13 +2,11 @@ package database
 
 import (
 	"github.com/go-pg/pg"
+	"github.com/voltento/walletManager/internal/httpQueryModels"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
-type Transaction interface {
-	Commit() error
-	Rollback() error
-}
+type Payment = httpQueryModels.Payment
 
 type WalletManager interface {
 	RunInTransaction(func() error) error

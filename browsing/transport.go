@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/database"
 	"github.com/voltento/walletManager/internal/utils"
 	"net/http"
 )
@@ -20,8 +19,6 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	}
 	return er
 }
-
-type paymentResponse = database.Payment
 
 func MakeGetAccountsHandler(s Service) http.Handler {
 	return kithttp.NewServer(
