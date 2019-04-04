@@ -1,10 +1,9 @@
-package account_managing
+package accmamaging
 
 import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/database"
 	"github.com/voltento/walletManager/internal/walletErrors"
 	"net/http"
 )
@@ -25,7 +24,13 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	return er
 }
 
-type request = database.Account
+type Account struct {
+	Id       string  `json:"id"`
+	Currency string  `json:"currency"`
+	Amount   float64 `json:"amount"`
+}
+
+type request = Account
 
 type response struct {
 	Response string `json:"response"`

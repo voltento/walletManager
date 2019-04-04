@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/voltento/walletManager/account_managing"
+	"github.com/voltento/walletManager/accmamaging"
 	"github.com/voltento/walletManager/browsing"
 	"github.com/voltento/walletManager/internal/config"
 	"github.com/voltento/walletManager/internal/database"
@@ -23,8 +23,8 @@ func main() {
 		log.Fatal(fmt.Sprintf("Error: %v", er.Error()))
 	}
 
-	s := account_managing.CreateService(dbCtrl)
-	r.Handle("/account_managing/add/", account_managing.MakeHandler(s)).Methods("PUT")
+	s := accmamaging.CreateService(dbCtrl)
+	r.Handle("/accmamaging/add/", accmamaging.MakeHandler(s)).Methods("PUT")
 
 	b := browsing.CreateService(dbCtrl)
 	r.Handle("/browsing/accounts", browsing.MakeGetAccountsHandler(b)).Methods("GET")

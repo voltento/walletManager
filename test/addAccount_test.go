@@ -16,10 +16,11 @@ func TestCreateService(t *testing.T) {
 		body string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    CheckResp
-		wantErr bool
+		name      string
+		args      args
+		want      CheckResp
+		wantErr   bool
+		postCheck func() error
 	}{
 		{
 			name: "Add account: ok",
@@ -63,6 +64,12 @@ func TestCreateService(t *testing.T) {
 			}
 			if err = tt.want(got); err != nil {
 				t.Error(err.Error())
+			}
+			if tt.postCheck != nil {
+				err = tt.postCheck()
+				if err != nil {
+					t.Error()
+				}
 			}
 		})
 	}

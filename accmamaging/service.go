@@ -1,4 +1,4 @@
-package account_managing
+package accmamaging
 
 import (
 	"fmt"

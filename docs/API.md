@@ -4,7 +4,7 @@
 
 * **URL**
 
-  account_managing/add/
+  browsing/add/
 
 * **Method:**
 
@@ -84,7 +84,7 @@
 
 * **URL**
 
-  /account_managing/add/
+  /accmamaging/add/
 
 * **Method:**
 
@@ -116,7 +116,7 @@
 
 * **Sample Call:**
 
-  ```curl -XPUT -d'{"id":"f100", "currency": "USD", "amount": 100}' localhost:8080/account_managing/add/```
+  ```curl -XPUT -d'{"id":"f100", "currency": "USD", "amount": 100}' localhost:8080/accmamaging/add/```
   
   
 **Transfer money**
