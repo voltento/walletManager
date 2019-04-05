@@ -9,7 +9,7 @@ import (
 
 type Service interface {
 	// Create user account
-	createUser(id string, currency string, balance float64) (string, error)
+	CreateUser(id string, currency string, balance float64) (string, error)
 }
 
 func CreateService(c ctrl.WalletMgrCluster) Service {
@@ -20,7 +20,8 @@ type serviceImplementation struct {
 	c ctrl.WalletMgrCluster
 }
 
-func (s serviceImplementation) createUser(id string, currency string, balance float64) (string, error) {
+// Implementation of Service interface
+func (s serviceImplementation) CreateUser(id string, currency string, balance float64) (string, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 	if id == "" {

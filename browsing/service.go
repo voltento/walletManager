@@ -9,10 +9,10 @@ type Payment = httpModel.Payment
 
 type Service interface {
 	// Get all users accounts
-	getUsers() ([]httpModel.Account, error)
+	GetUsers() ([]httpModel.Account, error)
 
 	// Get all payments
-	getPayments() ([]Payment, error)
+	GetPayments() ([]Payment, error)
 }
 
 func CreateService(c ctrl.WalletMgrCluster) Service {
@@ -23,14 +23,16 @@ type serviceImplementation struct {
 	c ctrl.WalletMgrCluster
 }
 
-func (s serviceImplementation) getUsers() ([]httpModel.Account, error) {
+// Implementation of Service interface
+func (s serviceImplementation) GetUsers() ([]httpModel.Account, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 
 	return m.GetAllAccounts()
 }
 
-func (s serviceImplementation) getPayments() ([]Payment, error) {
+// Implementation of Service interface
+func (s serviceImplementation) GetPayments() ([]Payment, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 

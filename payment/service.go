@@ -10,10 +10,10 @@ import (
 
 type Service interface {
 	// Change account balance for amount
-	changeBalance(r httpModel.ChangeBalanceRequest) (*httpModel.GeneralResponse, error)
+	ChangeBalance(r httpModel.ChangeBalanceRequest) (*httpModel.GeneralResponse, error)
 
 	// Send money from one account to another
-	sendMoney(r httpModel.SendMoneyRequest) (*httpModel.GeneralResponse, error)
+	SendMoney(r httpModel.SendMoneyRequest) (*httpModel.GeneralResponse, error)
 }
 
 func CreateService(c ctrl.WalletMgrCluster) Service {
@@ -24,7 +24,8 @@ type serviceImplementation struct {
 	c ctrl.WalletMgrCluster
 }
 
-func (s serviceImplementation) changeBalance(r httpModel.ChangeBalanceRequest) (*httpModel.GeneralResponse, error) {
+// Implementation of Service interface
+func (s serviceImplementation) ChangeBalance(r httpModel.ChangeBalanceRequest) (*httpModel.GeneralResponse, error) {
 	m, closer := s.c.GetWalletMgr()
 	defer closer()
 	er := m.ChangeAccountBalance(r.Id, r.Amount)
@@ -35,15 +36,18 @@ func (s serviceImplementation) changeBalance(r httpModel.ChangeBalanceRequest) (
 	return &httpModel.GeneralResponse{Response: "Success"}, nil
 }
 
+// Method for transfering money between accounts
+// This method doesn't check that users have the same currency
+// Make sure this method is called in a transaction mode
 func (s serviceImplementation) transferMoney(m ctrl.WalletManager, fromId string, toId string, amount float64) error {
 	var er error
 
-	_, er = s.changeBalance(httpModel.ChangeBalanceRequest{Id: fromId, Amount: -amount})
+	_, er = s.ChangeBalance(httpModel.ChangeBalanceRequest{Id: fromId, Amount: -amount})
 	if er != nil {
 		return er
 	}
 
-	_, er = s.changeBalance(httpModel.ChangeBalanceRequest{Id: toId, Amount: amount})
+	_, er = s.ChangeBalance(httpModel.ChangeBalanceRequest{Id: toId, Amount: amount})
 	if er != nil {
 		return er
 	}
@@ -53,6 +57,7 @@ func (s serviceImplementation) transferMoney(m ctrl.WalletManager, fromId string
 	return er
 }
 
+// Return an error if accounts have different currency
 func (s serviceImplementation) assertEqualCurrency(m ctrl.WalletManager, acc1 string, acc2 string) error {
 	var er error
 
@@ -75,7 +80,8 @@ func (s serviceImplementation) assertEqualCurrency(m ctrl.WalletManager, acc1 st
 	return nil
 }
 
-func (s serviceImplementation) sendMoney(r httpModel.SendMoneyRequest) (*httpModel.GeneralResponse, error) {
+// Implementation of Service interface
+func (s serviceImplementation) SendMoney(r httpModel.SendMoneyRequest) (*httpModel.GeneralResponse, error) {
 	var er error
 
 	if r.Amount == 0 {

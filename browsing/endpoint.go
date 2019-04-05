@@ -8,7 +8,7 @@ import "context"
 
 func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
-		v, er := svc.getUsers()
+		v, er := svc.GetUsers()
 		if er != nil {
 			if _, ok := er.(utils.HttpError); ok {
 				return nil, er
@@ -21,7 +21,7 @@ func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 
 func makeGetPaymentsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
-		v, er := svc.getPayments()
+		v, er := svc.GetPayments()
 		if er != nil {
 			if _, ok := er.(utils.HttpError); ok {
 				return nil, er

@@ -10,7 +10,7 @@ import "context"
 func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		req := r.(httpModel.ChangeBalanceRequest)
-		v, er := svc.changeBalance(req)
+		v, er := svc.ChangeBalance(req)
 		if er != nil {
 			if _, ok := er.(utils.HttpError); ok {
 				return nil, er
@@ -24,7 +24,7 @@ func makeGetAccountsEndpoint(svc Service) endpoint.Endpoint {
 func makeSendMoneyEndpoint(svc Service) endpoint.Endpoint {
 	return func(ctx context.Context, r interface{}) (interface{}, error) {
 		req := r.(httpModel.SendMoneyRequest)
-		v, er := svc.sendMoney(req)
+		v, er := svc.SendMoney(req)
 		if er != nil {
 			if _, ok := er.(utils.HttpError); ok {
 				return nil, er
