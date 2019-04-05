@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestBrawsAccount(t *testing.T) {
+func TestBrowsAccount(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	ac := httpModel.Account{
