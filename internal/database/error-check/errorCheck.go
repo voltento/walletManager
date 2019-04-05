@@ -11,7 +11,7 @@ type psqlErrorType struct {
 
 var (
 	constraintViolation = psqlErrorType{ind: byte(82), msg: "ExecConstraints"}
-	duplicateAccountId  = psqlErrorType{ind: byte(67), msg: "23505"}
+	uniqVialation       = psqlErrorType{ind: byte(67), msg: "23505"}
 )
 
 // Check if psql returned constraint violation error
@@ -20,8 +20,8 @@ func IsConstraintViolationError(er error) bool {
 }
 
 // Check if psql returned duplicate key error
-func IsAccIdDuplicate(er error) bool {
-	return checkPgErrorType(er, duplicateAccountId)
+func IsUniqVialation(er error) bool {
+	return checkPgErrorType(er, uniqVialation)
 }
 
 // General method for matching psql error type

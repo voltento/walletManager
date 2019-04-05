@@ -97,7 +97,7 @@ type stmt = stmt_middleware.Decorator
 type psqlManager struct {
 	db *pg.DB
 
-	insertStmt        stmt
+	addAccStmt        stmt
 	getAccountsStmt   stmt
 	getAccountStmt    stmt
 	updateAccountStmt stmt
@@ -121,12 +121,13 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 
 	var err error
 
-	var insertStmt stmt
-	insertStmt, err = db.Prepare("insert into account (id, currency, amount) values ($1, $2, $3);")
+	var addAccStmt stmt
+	addAccStmt, err = db.Prepare("insert into account (id, currency, amount) values ($1, $2, $3);")
 	if err != nil {
 		return nil, err
 	}
-	insertStmt = stmt_middleware.LoseConWithDb(insertStmt)
+	addAccStmt = stmt_middleware.LoseConWithDb(addAccStmt)
+	addAccStmt = stmt_middleware.UniqViolation(addAccStmt, "account id")
 
 	var getPaymentsStmt stmt
 	getPaymentsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
@@ -172,7 +173,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 
 	mgr := psqlManager{
 		db:                db,
-		insertStmt:        insertStmt,
+		addAccStmt:        addAccStmt,
 		getAccountsStmt:   getAccountsStmt,
 		getAccountStmt:    getAccountStmt,
 		updateAccountStmt: updateAccountStmt,
@@ -190,11 +191,7 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 }
 
 func (m psqlManager) AddAccount(ac Account) error {
-	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
-	if error_check.IsAccIdDuplicate(er) {
-		return utils.BuildGeneralQueryError("Account id already exists")
-	}
-
+	_, er := m.addAccStmt.Exec(ac.Id, ac.Currency, ac.Amount)
 	return er
 }
 
