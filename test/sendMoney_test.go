@@ -32,7 +32,6 @@ func TestSendPayment(t *testing.T) {
 		name      string
 		args      args
 		want      CheckResp
-		wantErr   bool
 		postCheck func() error
 	}{
 		{
@@ -48,7 +47,6 @@ func TestSendPayment(t *testing.T) {
 					code: 400,
 				})
 			},
-			wantErr: false,
 		},
 		{
 			name: "Send money: ok",
@@ -63,7 +61,6 @@ func TestSendPayment(t *testing.T) {
 					code: 200,
 				})
 			},
-			wantErr: false,
 		},
 		{
 			name: "Send money: diff currencies",
@@ -78,7 +75,6 @@ func TestSendPayment(t *testing.T) {
 					code: 400,
 				})
 			},
-			wantErr: false,
 		},
 		{
 			name: "Send money: diff currencies",
@@ -92,20 +88,16 @@ func TestSendPayment(t *testing.T) {
 					code: 400,
 				})
 			},
-			wantErr: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := sendRequest(sendMoneyUrl, "PUT", tt.args.body)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sendRequest() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 			if err = tt.want(got); err != nil {
 				t.Error(err.Error())
 			}
+
 			if tt.postCheck != nil {
 				err = tt.postCheck()
 				if err != nil {

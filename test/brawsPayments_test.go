@@ -26,9 +26,8 @@ func TestBrawsPayments(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		want    CheckResp
-		wantErr bool
+		name string
+		want CheckResp
 	}{
 		{
 			name: "Browsing payments: ok",
@@ -49,11 +48,6 @@ func TestBrawsPayments(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := sendRequest(getPaymentsUrl, "GET", "")
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sendRequest() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 
 			if err = tt.want(got); err != nil {
 				t.Error(err.Error())

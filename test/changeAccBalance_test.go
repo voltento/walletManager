@@ -27,7 +27,6 @@ func TestChangeAccBalance(t *testing.T) {
 		name      string
 		args      args
 		want      CheckResp
-		wantErr   bool
 		postCheck func() error
 	}{
 		{
@@ -36,7 +35,6 @@ func TestChangeAccBalance(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"response\":\"Success\"}", 200})
 			},
-			wantErr: false,
 			postCheck: func() error {
 				newAcc, er := getAccount(acc.Id)
 				if er != nil {
@@ -55,7 +53,6 @@ func TestChangeAccBalance(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"response\":\"Success\"}", 200})
 			},
-			wantErr: false,
 			postCheck: func() error {
 				newAcc, er := getAccount(acc.Id)
 				if er != nil {
@@ -78,7 +75,6 @@ func TestChangeAccBalance(t *testing.T) {
 						code: 400,
 					})
 			},
-			wantErr: false,
 			postCheck: func() error {
 				newAcc, er := getAccount(acc.Id)
 				if er != nil {
@@ -96,10 +92,6 @@ func TestChangeAccBalance(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := sendRequest(changeBalanceUrl, "PUT", tt.args.body)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sendRequest() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 			if err = tt.want(got); err != nil {
 				t.Error(err.Error())
 			}

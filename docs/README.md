@@ -16,13 +16,6 @@ Check the Deployment.md file
 **API**<br />
 Check the API.md file
 
-**Testing**
-
-Run tests in two simple steps
-
-- Run wallet manager instance `docker-compose -f .deploy/docker-compose.yml up --force-recreate --build`
-- Run tests `go test ./test`
-
 **Deploy**
 
 Run the wallet mgr and the database in the one command with docker-compose
@@ -32,3 +25,10 @@ Run the wallet mgr and the database in the one command with docker-compose
 After that command wallet will be available by address `localhost:5432`
 
 Check API.md for to find out usage examples 
+
+**Testing**
+
+Run tests in two simple steps
+
+- Run wallet manager instance `docker-compose -f .deploy/docker-compose.yml up --force-recreate --build`
+- Run tests `go test ./test`

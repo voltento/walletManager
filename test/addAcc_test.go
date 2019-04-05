@@ -21,7 +21,6 @@ func TestAddAccount(t *testing.T) {
 		name      string
 		args      args
 		want      CheckResp
-		wantErr   bool
 		postCheck func() error
 	}{
 		{
@@ -30,7 +29,6 @@ func TestAddAccount(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"response\":\"Success\"}", 200})
 			},
-			wantErr:   false,
 			postCheck: func() error { return assertAccExists(accId) },
 		},
 		{
@@ -39,7 +37,6 @@ func TestAddAccount(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"error\": \"Account id already exists\"}", 400})
 			},
-			wantErr: false,
 		},
 		{
 			name: "Add account: miss id",
@@ -47,7 +44,6 @@ func TestAddAccount(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"error\": \"got empty value for mandatory field `id`\"}", 400})
 			},
-			wantErr: false,
 		},
 		{
 			name: "Add account: miss id",
@@ -55,17 +51,12 @@ func TestAddAccount(t *testing.T) {
 			want: func(r httpResp) error {
 				return assertEqHttpResp(r, httpResp{"{\"error\": \"got empty value for mandatory field `currency`\"}", 400})
 			},
-			wantErr: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := sendRequest(addAccountUrl, "PUT", tt.args.body)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sendRequest() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 			if err = tt.want(got); err != nil {
 				t.Error(err.Error())
 			}
