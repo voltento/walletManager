@@ -2,7 +2,7 @@ package accmamaging
 
 import (
 	"github.com/go-kit/kit/endpoint"
-	"github.com/voltento/walletManager/internal/httpModel"
+	"github.com/voltento/walletManager/internal/httpmodel"
 	"github.com/voltento/walletManager/internal/utils"
 )
 import "context"

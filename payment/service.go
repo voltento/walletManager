@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/voltento/walletManager/internal/database/ctrl"
 	"github.com/voltento/walletManager/internal/database/model"
-	"github.com/voltento/walletManager/internal/httpModel"
+	"github.com/voltento/walletManager/internal/httpmodel"
 	"github.com/voltento/walletManager/internal/utils"
 )
 

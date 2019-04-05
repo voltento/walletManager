@@ -3,7 +3,7 @@ package test
 import (
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/internal/httpModel"
+	"github.com/voltento/walletManager/internal/httpmodel"
 	"math/rand"
 	"strconv"
 	"testing"

@@ -2,9 +2,9 @@ package ctrl
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/internal/database/error-check"
+	"github.com/voltento/walletManager/internal/database/errorcheck"
 	"github.com/voltento/walletManager/internal/database/model"
-	"github.com/voltento/walletManager/internal/database/stmt-middleware"
+	"github.com/voltento/walletManager/internal/database/stmt-mw"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
@@ -91,7 +91,7 @@ func CreateWalletMgrCluster(user string, pswrd string, dbName string, addr strin
 	return cluster, nil
 }
 
-type stmt = stmt_middleware.Decorator
+type stmt = stmt_mw.Decorator
 
 // Implementation of WalletManager
 type psqlManager struct {
@@ -126,58 +126,58 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 	if err != nil {
 		return nil, err
 	}
-	addAccStmt = stmt_middleware.LoseConWithDb(addAccStmt)
-	addAccStmt = stmt_middleware.NotEmptyResp(addAccStmt, "account id")
-	addAccStmt = stmt_middleware.UniqViolation(addAccStmt, "account id")
-	addAccStmt = stmt_middleware.NotEmptyRowEffected(addAccStmt, "account")
+	addAccStmt = stmt_mw.LoseConWithDb(addAccStmt)
+	addAccStmt = stmt_mw.NotEmptyResp(addAccStmt, "account id")
+	addAccStmt = stmt_mw.UniqViolation(addAccStmt, "account id")
+	addAccStmt = stmt_mw.NotEmptyRowEffected(addAccStmt, "account")
 
 	var getPaymentsStmt stmt
 	getPaymentsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
 	if err != nil {
 		return nil, err
 	}
-	getPaymentsStmt = stmt_middleware.LoseConWithDb(getPaymentsStmt)
+	getPaymentsStmt = stmt_mw.LoseConWithDb(getPaymentsStmt)
 
 	var getAccountStmt stmt
 	getAccountStmt, err = db.Prepare("select id, currency, amount from account where id=$1;")
 	if err != nil {
 		return nil, err
 	}
-	getAccountStmt = stmt_middleware.LoseConWithDb(getAccountStmt)
-	getAccountStmt = stmt_middleware.NotEmptyResp(getAccountStmt, "account")
+	getAccountStmt = stmt_mw.LoseConWithDb(getAccountStmt)
+	getAccountStmt = stmt_mw.NotEmptyResp(getAccountStmt, "account")
 
 	var updateAccountStmt stmt
 	updateAccountStmt, err = db.Prepare("update account set id=$1, currency=$2, amount=$3  where id=$4;")
 	if err != nil {
 		return nil, err
 	}
-	updateAccountStmt = stmt_middleware.LoseConWithDb(updateAccountStmt)
-	updateAccountStmt = stmt_middleware.NotEmptyRowEffected(updateAccountStmt, "account")
+	updateAccountStmt = stmt_mw.LoseConWithDb(updateAccountStmt)
+	updateAccountStmt = stmt_mw.NotEmptyRowEffected(updateAccountStmt, "account")
 
 	var getAccountsStmt stmt
 	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
 	if err != nil {
 		return nil, err
 	}
-	getAccountsStmt = stmt_middleware.LoseConWithDb(getAccountsStmt)
-	getAccountsStmt = stmt_middleware.NotEmptyResp(getAccountsStmt, "account")
+	getAccountsStmt = stmt_mw.LoseConWithDb(getAccountsStmt)
+	getAccountsStmt = stmt_mw.NotEmptyResp(getAccountsStmt, "account")
 
 	var addPaymentStmt stmt
 	addPaymentStmt, err = db.Prepare("insert into payment (from_account, to_account, amount) values ($1, $2, $3);")
 	if err != nil {
 		return nil, err
 	}
-	addPaymentStmt = stmt_middleware.LoseConWithDb(addPaymentStmt)
-	addPaymentStmt = stmt_middleware.NotEmptyResp(addPaymentStmt, "account")
-	updateAccountStmt = stmt_middleware.NotEmptyRowEffected(updateAccountStmt, "account")
+	addPaymentStmt = stmt_mw.LoseConWithDb(addPaymentStmt)
+	addPaymentStmt = stmt_mw.NotEmptyResp(addPaymentStmt, "account")
+	updateAccountStmt = stmt_mw.NotEmptyRowEffected(updateAccountStmt, "account")
 
 	var incAccBalanceStmt stmt
 	incAccBalanceStmt, err = db.Prepare("update account set amount=amount+$1 where id=$2;")
 	if err != nil {
 		return nil, err
 	}
-	incAccBalanceStmt = stmt_middleware.LoseConWithDb(incAccBalanceStmt)
-	incAccBalanceStmt = stmt_middleware.NotEmptyRowEffected(incAccBalanceStmt, "account")
+	incAccBalanceStmt = stmt_mw.LoseConWithDb(incAccBalanceStmt)
+	incAccBalanceStmt = stmt_mw.NotEmptyRowEffected(incAccBalanceStmt, "account")
 
 	mgr := psqlManager{
 		db:                db,
@@ -234,7 +234,7 @@ func (m psqlManager) AddPayment(p Payment) error {
 func (m psqlManager) ChangeAccountBalance(id string, changeAmount float64) error {
 	_, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
-		if error_check.IsConstraintViolationError(er) {
+		if errorcheck.IsConstraintViolationError(er) {
 			er = utils.BuildFewBalanceError(id)
 		}
 	}

@@ -1,4 +1,4 @@
-package error_check
+package errorcheck
 
 import (
 	"github.com/go-pg/pg"

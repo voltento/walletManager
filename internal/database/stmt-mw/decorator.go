@@ -1,4 +1,4 @@
-package stmt_middleware
+package stmt_mw
 
 import "github.com/go-pg/pg"
 

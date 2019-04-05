@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/internal/httpModel"
+	"github.com/voltento/walletManager/internal/httpmodel"
 	"testing"
 )
 

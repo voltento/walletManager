@@ -1,9 +1,9 @@
-package stmt_middleware
+package stmt_mw
 
 import (
 	"fmt"
 	"github.com/go-pg/pg"
-	error_check "github.com/voltento/walletManager/internal/database/error-check"
+	error_check "github.com/voltento/walletManager/internal/database/errorcheck"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
