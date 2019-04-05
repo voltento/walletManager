@@ -2,7 +2,7 @@
   "address": ":8080",
   "db": {
     "name": "db",
-    "address": ":5432",
+    "address": "db:5432",
     "user": "user",
     "password": "pass",
     "pool_size": 2
