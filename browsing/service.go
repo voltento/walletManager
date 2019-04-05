@@ -1,8 +1,8 @@
 package browsing
 
 import (
-	"github.com/voltento/walletManager/internal/database/ctrl"
-	"github.com/voltento/walletManager/internal/httpmodel"
+	"github.com/voltento/wallet_manager/internal/database/ctrl"
+	"github.com/voltento/wallet_manager/internal/httpmodel"
 )
 
 type Payment = httpModel.Payment

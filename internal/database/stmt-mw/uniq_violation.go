@@ -3,8 +3,8 @@ package stmt_mw
 import (
 	"fmt"
 	"github.com/go-pg/pg"
-	error_check "github.com/voltento/walletManager/internal/database/errorcheck"
-	"github.com/voltento/walletManager/internal/utils"
+	error_check "github.com/voltento/wallet_manager/internal/database/errorcheck"
+	"github.com/voltento/wallet_manager/internal/utils"
 )
 
 func UniqViolation(s Decorator, violationField string) Decorator {

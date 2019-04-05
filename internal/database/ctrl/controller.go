@@ -2,10 +2,10 @@ package ctrl
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/internal/database/errorcheck"
-	"github.com/voltento/walletManager/internal/database/model"
-	"github.com/voltento/walletManager/internal/database/stmt-mw"
-	"github.com/voltento/walletManager/internal/utils"
+	"github.com/voltento/wallet_manager/internal/database/errorcheck"
+	"github.com/voltento/wallet_manager/internal/database/model"
+	"github.com/voltento/wallet_manager/internal/database/stmt-mw"
+	"github.com/voltento/wallet_manager/internal/utils"
 )
 
 type Account = model.Account

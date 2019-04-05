@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/internal/httpmodel"
+	"github.com/voltento/wallet_manager/internal/httpmodel"
 	"math/rand"
 	"reflect"
 	"strconv"

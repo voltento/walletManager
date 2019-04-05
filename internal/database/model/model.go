@@ -1,6 +1,6 @@
 package model
 
-import "github.com/voltento/walletManager/internal/httpmodel"
+import "github.com/voltento/wallet_manager/internal/httpmodel"
 
 type Account = httpModel.Account
 type Payment = httpModel.Payment

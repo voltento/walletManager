@@ -3,7 +3,7 @@ package stmt_mw
 import (
 	"fmt"
 	"github.com/go-pg/pg"
-	error_check "github.com/voltento/walletManager/internal/database/errorcheck"
+	error_check "github.com/voltento/wallet_manager/internal/database/errorcheck"
 	"os"
 )
 

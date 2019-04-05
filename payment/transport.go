@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
-	"github.com/voltento/walletManager/internal/httpmodel"
-	"github.com/voltento/walletManager/internal/utils"
+	"github.com/voltento/wallet_manager/internal/httpmodel"
+	"github.com/voltento/wallet_manager/internal/utils"
 	"net/http"
 )
 

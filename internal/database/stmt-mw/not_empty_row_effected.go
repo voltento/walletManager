@@ -2,7 +2,7 @@ package stmt_mw
 
 import (
 	"github.com/go-pg/pg"
-	"github.com/voltento/walletManager/internal/utils"
+	"github.com/voltento/wallet_manager/internal/utils"
 )
 
 func NotEmptyRowEffected(s Decorator, missiedField string) Decorator {

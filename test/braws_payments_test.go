@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/internal/database/model"
+	"github.com/voltento/wallet_manager/internal/database/model"
 	"strings"
 	"testing"
 )

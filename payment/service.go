@@ -2,10 +2,10 @@ package payment
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/internal/database/ctrl"
-	"github.com/voltento/walletManager/internal/database/model"
-	"github.com/voltento/walletManager/internal/httpmodel"
-	"github.com/voltento/walletManager/internal/utils"
+	"github.com/voltento/wallet_manager/internal/database/ctrl"
+	"github.com/voltento/wallet_manager/internal/database/model"
+	"github.com/voltento/wallet_manager/internal/httpmodel"
+	"github.com/voltento/wallet_manager/internal/utils"
 )
 
 type Service interface {
