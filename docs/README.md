@@ -11,9 +11,6 @@ This software solves the problem of storing wallets users wallets and transferin
 - Account balance can't be negative
 - Account currency isn't able to be changed
 
-**Deployment**<br />
-Check the Deployment.md file
-
 **API**<br />
 Check the API.md file
 
@@ -26,6 +23,9 @@ Run the wallet mgr and the database in the one command with docker-compose
 After that command wallet will be available by address `localhost:5432`
 
 Check API.md for to find out usage examples 
+
+If you wanna use PostgreSQL without provided docker file, you have to pre initialize the database with the sql queries
+with are described in the file `.deploy/db/init.sql`
 
 **Testing**
 
