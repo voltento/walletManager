@@ -129,6 +129,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 	addAccStmt = stmt_middleware.LoseConWithDb(addAccStmt)
 	addAccStmt = stmt_middleware.NotEmptyResp(addAccStmt, "account id")
 	addAccStmt = stmt_middleware.UniqViolation(addAccStmt, "account id")
+	addAccStmt = stmt_middleware.NotEmptyRowEffected(addAccStmt, "account")
 
 	var getPaymentsStmt stmt
 	getPaymentsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
@@ -151,6 +152,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 		return nil, err
 	}
 	updateAccountStmt = stmt_middleware.LoseConWithDb(updateAccountStmt)
+	updateAccountStmt = stmt_middleware.NotEmptyRowEffected(updateAccountStmt, "account")
 
 	var getAccountsStmt stmt
 	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
@@ -167,6 +169,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 	}
 	addPaymentStmt = stmt_middleware.LoseConWithDb(addPaymentStmt)
 	addPaymentStmt = stmt_middleware.NotEmptyResp(addPaymentStmt, "account")
+	updateAccountStmt = stmt_middleware.NotEmptyRowEffected(updateAccountStmt, "account")
 
 	var incAccBalanceStmt stmt
 	incAccBalanceStmt, err = db.Prepare("update account set amount=amount+$1 where id=$2;")
@@ -174,6 +177,7 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 		return nil, err
 	}
 	incAccBalanceStmt = stmt_middleware.LoseConWithDb(incAccBalanceStmt)
+	incAccBalanceStmt = stmt_middleware.NotEmptyRowEffected(incAccBalanceStmt, "account")
 
 	mgr := psqlManager{
 		db:                db,
@@ -202,45 +206,24 @@ func (m psqlManager) AddAccount(ac Account) error {
 func (m psqlManager) GetAllAccounts() ([]Account, error) {
 	var acc []Account
 	_, er := m.getAccountsStmt.Query(&acc)
-	if er != nil {
-		return nil, er
-	}
-
-	return acc, nil
+	return acc, er
 }
 
 func (m psqlManager) GetPayments() ([]Payment, error) {
 	var ps []Payment
 	_, er := m.getPaymentsStmt.Query(&ps)
-	if er != nil {
-		return nil, er
-	}
-
-	return ps, nil
+	return ps, er
 }
 
 func (m psqlManager) UpdateAccount(id string, acc Account) error {
-	r, er := m.updateAccountStmt.Exec(acc.Id, acc.Currency, acc.Amount, id)
-	if er != nil {
-		return er
-	}
-
-	if r.RowsAffected() == 0 {
-		return utils.BuildFindAccountError(id)
-	}
-
-	return nil
+	_, er := m.updateAccountStmt.Exec(acc.Id, acc.Currency, acc.Amount, id)
+	return er
 }
 
 func (m psqlManager) GetAccount(id string) (*Account, error) {
 	acc := new(Account)
 	_, er := m.getAccountStmt.Query(acc, id)
-
-	if er != nil {
-		return nil, er
-	}
-
-	return acc, nil
+	return acc, er
 }
 
 func (m psqlManager) AddPayment(p Payment) error {
@@ -249,16 +232,11 @@ func (m psqlManager) AddPayment(p Payment) error {
 }
 
 func (m psqlManager) ChangeAccountBalance(id string, changeAmount float64) error {
-	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
+	_, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
 		if error_check.IsConstraintViolationError(er) {
-			return utils.BuildFewBalanceError(id)
+			er = utils.BuildFewBalanceError(id)
 		}
-		return er
-	}
-
-	if r.RowsAffected() == 0 {
-		return utils.BuildFindAccountError(id)
 	}
 
 	return er
