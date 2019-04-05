@@ -121,47 +121,54 @@ func createPsqlWalletMgr(user string, pswrd string, dbName string, addr string) 
 
 	var err error
 
-	var insertStmt *pg.Stmt
+	var insertStmt stmt
 	insertStmt, err = db.Prepare("insert into account (id, currency, amount) values ($1, $2, $3);")
 	if err != nil {
 		return nil, err
 	}
+	insertStmt = stmt_middleware.LoseConWithDb(insertStmt)
 
-	var getPaymentsStmt *pg.Stmt
+	var getPaymentsStmt stmt
 	getPaymentsStmt, err = db.Prepare("select id, from_account, to_account, amount from payment;")
 	if err != nil {
 		return nil, err
 	}
+	getPaymentsStmt = stmt_middleware.LoseConWithDb(getPaymentsStmt)
 
-	var getAccountStmt *pg.Stmt
+	var getAccountStmt stmt
 	getAccountStmt, err = db.Prepare("select id, currency, amount from account where id=$1;")
 	if err != nil {
 		return nil, err
 	}
+	getAccountStmt = stmt_middleware.LoseConWithDb(getAccountStmt)
 
-	var updateAccountStmt *pg.Stmt
+	var updateAccountStmt stmt
 	updateAccountStmt, err = db.Prepare("update account set id=$1, currency=$2, amount=$3  where id=$4;")
 	if err != nil {
 		return nil, err
 	}
+	updateAccountStmt = stmt_middleware.LoseConWithDb(updateAccountStmt)
 
-	var getAccountsStmt *pg.Stmt
+	var getAccountsStmt stmt
 	getAccountsStmt, err = db.Prepare("select id, currency, amount from account;")
 	if err != nil {
 		return nil, err
 	}
+	getAccountsStmt = stmt_middleware.LoseConWithDb(getAccountsStmt)
 
-	var addPaymentStmt *pg.Stmt
+	var addPaymentStmt stmt
 	addPaymentStmt, err = db.Prepare("insert into payment (from_account, to_account, amount) values ($1, $2, $3);")
 	if err != nil {
 		return nil, err
 	}
+	addPaymentStmt = stmt_middleware.LoseConWithDb(addPaymentStmt)
 
-	var incAccBalanceStmt *pg.Stmt
+	var incAccBalanceStmt stmt
 	incAccBalanceStmt, err = db.Prepare("update account set amount=amount+$1 where id=$2;")
 	if err != nil {
 		return nil, err
 	}
+	incAccBalanceStmt = stmt_middleware.LoseConWithDb(incAccBalanceStmt)
 
 	mgr := psqlManager{
 		db:                db,
