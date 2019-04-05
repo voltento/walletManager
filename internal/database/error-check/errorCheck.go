@@ -26,6 +26,10 @@ func IsUniqVialation(er error) bool {
 
 // General method for matching psql error type
 func checkPgErrorType(er error, expected psqlErrorType) bool {
+	if er == nil {
+		return false
+	}
+
 	if pgEr, ok := er.(pg.Error); ok {
 		return pgEr.Field(expected.ind) == expected.msg
 	}
@@ -34,5 +38,5 @@ func checkPgErrorType(er error, expected psqlErrorType) bool {
 
 // Check if service lost connection with database
 func IsLoseConnection(er error) bool {
-	return er.Error() == "EOF"
+	return er != nil && er.Error() == "EOF"
 }

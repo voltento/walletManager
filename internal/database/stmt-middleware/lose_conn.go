@@ -12,17 +12,17 @@ func LoseConWithDb(s Decorator) Decorator {
 }
 
 type loseConnection struct {
-	s Decorator
+	stm Decorator
 }
 
 func (s loseConnection) Exec(params ...interface{}) (pg.Result, error) {
-	r, er := s.Exec(params)
+	r, er := s.stm.Exec(params...)
 	existOnLostConnection(er)
 	return r, er
 }
 
 func (s loseConnection) Query(model interface{}, params ...interface{}) (pg.Result, error) {
-	r, er := s.Query(model, params)
+	r, er := s.stm.Query(model, params...)
 	existOnLostConnection(er)
 	return r, er
 }

@@ -109,7 +109,7 @@
     **Content:** `{ "error" : <msg> }`
     
   * **Code:** 400 <br />
-      **Content:** `{"error": "Account id already exists"}`
+      **Content:** `{"error": "Uniq violation for the field 'account id'"}`
       
   * **Code:** 400 <br />
       **Content:** `{"error": "got empty value for mandatory field <filed_name>"}`

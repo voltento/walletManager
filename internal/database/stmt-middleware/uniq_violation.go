@@ -8,22 +8,22 @@ import (
 )
 
 func UniqViolation(s Decorator, violationField string) Decorator {
-	return uniqViolation{s: s, violationField: violationField}
+	return uniqViolation{stm: s, violationField: violationField}
 }
 
 type uniqViolation struct {
-	s              Decorator
+	stm            Decorator
 	violationField string
 }
 
 func (s uniqViolation) Exec(params ...interface{}) (pg.Result, error) {
-	r, er := s.Exec(params)
+	r, er := s.stm.Exec(params...)
 	er = s.handleError(er)
 	return r, er
 }
 
 func (s uniqViolation) Query(model interface{}, params ...interface{}) (pg.Result, error) {
-	r, er := s.Query(model, params)
+	r, er := s.stm.Query(model, params...)
 	er = s.handleError(er)
 	return r, er
 }

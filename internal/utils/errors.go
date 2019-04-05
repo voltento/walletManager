@@ -48,8 +48,8 @@ func BuildFewBalanceError(acId string) HttpError {
 	return httpError{code: 400, msg: fmt.Sprintf("Few balance for the operation. Account id: `%v`", acId)}
 }
 
-func BuildNoDataError(acId string) HttpError {
-	return httpError{code: 200, msg: fmt.Sprintf("No data for `%v`", acId)}
+func BuildNoDataError(field string) HttpError {
+	return httpError{code: 200, msg: fmt.Sprintf("No data for `%v`", field)}
 }
 
 func BuildEmptyFieldError(fieldName string) error {

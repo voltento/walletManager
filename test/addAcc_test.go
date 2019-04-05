@@ -35,7 +35,7 @@ func TestAddAccount(t *testing.T) {
 			name: "Add account: again",
 			args: args{addUserArgs},
 			want: func(r httpResp) error {
-				return assertEqHttpResp(r, httpResp{"{\"error\": \"Account id already exists\"}", 400})
+				return assertEqHttpResp(r, httpResp{"{\"error\": \"Uniq violation for the field 'account id'\"}", 400})
 			},
 		},
 		{
