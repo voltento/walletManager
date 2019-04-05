@@ -15,6 +15,8 @@ import (
 	"os"
 )
 
+// This software is built with go-kit approach. For more information visit the https://github.com/go-kit/kit site
+
 func main() {
 	cfg := loadConfig()
 	r := mux.NewRouter()
