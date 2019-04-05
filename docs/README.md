@@ -1,5 +1,6 @@
 **Description**<br />
 This is wallet manager. It provide basic functional for storage wallets with different currency and operations with them <br />
+This software solves the problem of storing wallets users wallets and transfering money between them
 
 **Functional**<br />
 - Account creating
