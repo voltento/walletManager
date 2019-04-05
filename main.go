@@ -7,7 +7,7 @@ import (
 	"github.com/voltento/walletManager/accmamaging"
 	"github.com/voltento/walletManager/browsing"
 	"github.com/voltento/walletManager/internal/config"
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/database/ctrl"
 	"github.com/voltento/walletManager/payment"
 	"io/ioutil"
 	"log"
@@ -20,7 +20,7 @@ import (
 func main() {
 	cfg := loadConfig()
 	r := mux.NewRouter()
-	dbCtrl, er := database.CreateWalletMgrCluster(cfg.Db.User, cfg.Db.Password, cfg.Db.Name, cfg.Db.Addr, cfg.Db.DbPoolSize)
+	dbCtrl, er := ctrl.CreateWalletMgrCluster(cfg.Db.User, cfg.Db.Password, cfg.Db.Name, cfg.Db.Addr, cfg.Db.DbPoolSize)
 	if er != nil {
 		log.Fatal(fmt.Sprintf("Error: %v", er.Error()))
 	}

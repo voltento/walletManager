@@ -1,9 +1,15 @@
-package database
+package ctrl
 
 import (
 	"github.com/go-pg/pg"
+	"github.com/voltento/walletManager/internal/database/error-check"
+	"github.com/voltento/walletManager/internal/database/model"
+	"github.com/voltento/walletManager/internal/database/stmt-middleware"
 	"github.com/voltento/walletManager/internal/utils"
 )
+
+type Account = model.Account
+type Payment = model.Payment
 
 type WalletManager interface {
 	// Run some logic in the transaction.
@@ -85,17 +91,19 @@ func CreateWalletMgrCluster(user string, pswrd string, dbName string, addr strin
 	return cluster, nil
 }
 
+type stmt = stmt_middleware.Decorator
+
 // Implementation of WalletManager
 type psqlManager struct {
 	db *pg.DB
 
-	insertStmt        *pg.Stmt
-	getAccountsStmt   *pg.Stmt
-	getAccountStmt    *pg.Stmt
-	updateAccountStmt *pg.Stmt
-	addPaymentStmt    *pg.Stmt
-	getPaymentsStmt   *pg.Stmt
-	incAccBalanceStmt *pg.Stmt
+	insertStmt        stmt
+	getAccountsStmt   stmt
+	getAccountStmt    stmt
+	updateAccountStmt stmt
+	addPaymentStmt    stmt
+	getPaymentsStmt   stmt
+	incAccBalanceStmt stmt
 }
 
 func (m psqlManager) Close() error {
@@ -176,7 +184,7 @@ func (m psqlManager) RunInTransaction(fn func() error) error {
 
 func (m psqlManager) AddAccount(ac Account) error {
 	_, er := m.insertStmt.Exec(ac.Id, ac.Currency, ac.Amount)
-	if IsAccIdDuplicate(er) {
+	if error_check.IsAccIdDuplicate(er) {
 		return utils.BuildGeneralQueryError("Account id already exists")
 	}
 
@@ -247,7 +255,7 @@ func (m psqlManager) AddPayment(p Payment) error {
 func (m psqlManager) ChangeAccountBalance(id string, changeAmount float64) error {
 	r, er := m.incAccBalanceStmt.Exec(changeAmount, id)
 	if er != nil {
-		if IsConstraintViolationError(er) {
+		if error_check.IsConstraintViolationError(er) {
 			return utils.BuildFewBalanceError(id)
 		}
 		return er

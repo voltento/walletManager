@@ -1,4 +1,4 @@
-package database
+package error_check
 
 import (
 	"github.com/go-pg/pg"
@@ -30,4 +30,9 @@ func checkPgErrorType(er error, expected psqlErrorType) bool {
 		return pgEr.Field(expected.ind) == expected.msg
 	}
 	return false
+}
+
+// Check if service lost connection with database
+func IsLoseConnection(er error) bool {
+	return er.Error() == "EOF"
 }

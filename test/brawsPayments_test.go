@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/database/model"
 	"strings"
 	"testing"
 )
@@ -32,7 +32,7 @@ func TestBrawsPayments(t *testing.T) {
 		{
 			name: "Browsing payments: ok",
 			want: func(r httpResp) error {
-				var payments []database.Payment
+				var payments []model.Payment
 				er := json.NewDecoder(strings.NewReader(r.data)).Decode(&payments)
 				if er != nil {
 					return er

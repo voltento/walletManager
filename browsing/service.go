@@ -1,7 +1,7 @@
 package browsing
 
 import (
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/database/ctrl"
 	"github.com/voltento/walletManager/internal/httpModel"
 )
 
@@ -15,12 +15,12 @@ type Service interface {
 	getPayments() ([]Payment, error)
 }
 
-func CreateService(c database.WalletMgrCluster) Service {
+func CreateService(c ctrl.WalletMgrCluster) Service {
 	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	c database.WalletMgrCluster
+	c ctrl.WalletMgrCluster
 }
 
 func (s serviceImplementation) getUsers() ([]httpModel.Account, error) {

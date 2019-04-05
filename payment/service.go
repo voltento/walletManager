@@ -2,7 +2,8 @@ package payment
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/database/ctrl"
+	"github.com/voltento/walletManager/internal/database/model"
 	"github.com/voltento/walletManager/internal/httpModel"
 	"github.com/voltento/walletManager/internal/utils"
 )
@@ -15,12 +16,12 @@ type Service interface {
 	sendMoney(r httpModel.SendMoneyRequest) (*httpModel.GeneralResponse, error)
 }
 
-func CreateService(c database.WalletMgrCluster) Service {
+func CreateService(c ctrl.WalletMgrCluster) Service {
 	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	c database.WalletMgrCluster
+	c ctrl.WalletMgrCluster
 }
 
 func (s serviceImplementation) changeBalance(r httpModel.ChangeBalanceRequest) (*httpModel.GeneralResponse, error) {
@@ -34,7 +35,7 @@ func (s serviceImplementation) changeBalance(r httpModel.ChangeBalanceRequest) (
 	return &httpModel.GeneralResponse{Response: "Success"}, nil
 }
 
-func (s serviceImplementation) transferMoney(m database.WalletManager, fromId string, toId string, amount float64) error {
+func (s serviceImplementation) transferMoney(m ctrl.WalletManager, fromId string, toId string, amount float64) error {
 	var er error
 
 	_, er = s.changeBalance(httpModel.ChangeBalanceRequest{Id: fromId, Amount: -amount})
@@ -47,12 +48,12 @@ func (s serviceImplementation) transferMoney(m database.WalletManager, fromId st
 		return er
 	}
 
-	er = m.AddPayment(database.Payment{From_account: fromId, To_account: toId, Amount: amount})
+	er = m.AddPayment(model.Payment{From_account: fromId, To_account: toId, Amount: amount})
 
 	return er
 }
 
-func (s serviceImplementation) assertEqualCurrency(m database.WalletManager, acc1 string, acc2 string) error {
+func (s serviceImplementation) assertEqualCurrency(m ctrl.WalletManager, acc1 string, acc2 string) error {
 	var er error
 
 	var fromAcc *Account

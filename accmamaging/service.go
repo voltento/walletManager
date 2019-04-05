@@ -2,7 +2,8 @@ package accmamaging
 
 import (
 	"fmt"
-	"github.com/voltento/walletManager/internal/database"
+	"github.com/voltento/walletManager/internal/database/ctrl"
+	"github.com/voltento/walletManager/internal/database/model"
 	"github.com/voltento/walletManager/internal/utils"
 )
 
@@ -11,12 +12,12 @@ type Service interface {
 	createUser(id string, currency string, balance float64) (string, error)
 }
 
-func CreateService(c database.WalletMgrCluster) Service {
+func CreateService(c ctrl.WalletMgrCluster) Service {
 	return serviceImplementation{c}
 }
 
 type serviceImplementation struct {
-	c database.WalletMgrCluster
+	c ctrl.WalletMgrCluster
 }
 
 func (s serviceImplementation) createUser(id string, currency string, balance float64) (string, error) {
@@ -34,7 +35,7 @@ func (s serviceImplementation) createUser(id string, currency string, balance fl
 		return "", utils.BuildGeneralQueryError(fmt.Sprintf("got unexpected balue for field `%v` expected non negotive value.", balance))
 	}
 
-	er := m.AddAccount(database.Account{Id: id, Currency: currency, Amount: balance})
+	er := m.AddAccount(model.Account{Id: id, Currency: currency, Amount: balance})
 	if er != nil {
 		return "", er
 	}
